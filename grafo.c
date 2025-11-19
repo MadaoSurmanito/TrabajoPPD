@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "grafo.h"
 
@@ -16,4 +18,14 @@ void liberar_grafo(grafo* g) {
     for(int i = 0; i < g->num_nodos; ++i)
         free(g->coste[i]); 
     free(g->coste);
+}
+
+void imprimir_grafo(grafo* g) {
+    for(int x = 0; x < g->num_nodos; ++x) {
+        printf("|\t");
+        for(int y = 0; y < g->num_nodos; ++y)
+            printf("%i\t", g->coste[x][y]);
+        printf("|\n");
+    }
+    printf("\n");
 }
