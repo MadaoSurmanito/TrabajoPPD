@@ -5,8 +5,10 @@ grafo crear_grafo(int num_nodos){
     grafo ret;
     ret.num_nodos = num_nodos;
     ret.coste = (int**)malloc(num_nodos * sizeof(int*));
-    for(int i = 0; i < num_nodos; ++i)
+    for(int i = 0; i < num_nodos; ++i) {
         ret.coste[i] = (int*)malloc(num_nodos * sizeof(int));
+        memset(ret.coste[i], -1, num_nodos * sizeof(int));
+    }
     return ret;
 }
 
