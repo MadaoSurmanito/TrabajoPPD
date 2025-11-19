@@ -2,7 +2,7 @@ CXX = gcc
 CXXFLAGS = -fopenmp
 
 SRC = $(wildcard *.c)
-OBJ = $(SRC:.cu=.o)
+OBJ = $(SRC:.c=.o)
 EXE = programa
 
 %.o: %.cu
