@@ -25,3 +25,9 @@ void liberar_poblacion(poblacion* p) {
         free(p->individuos[i]); 
     free(p->individuos);
 }
+
+void intercambiar_poblaciones(poblacion* a, poblacion* b) {
+    int** tmp = b->individuos;
+    b->individuos = a->individuos;
+    a->individuos = tmp;
+}

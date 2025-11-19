@@ -1,19 +1,15 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "evaluar.h"
-#include "grafo.h"
 
-int evaluar(int* individuo, grafo* g) {
+int evaluar(int* individuo, int** costes, int num_nodos) {
 
-    unsigned char* repetidos = malloc(g->num_nodos);
-    memset(repetidos, 0, g->num_nodos);
+    unsigned char* repetidos = malloc(num_nodos);
+    memset(repetidos, 0, num_nodos);
 
     int ret = 0;
 
-    for(int i = 0; i < g->num_nodos; ++i) {
+    for(int i = 0; i < num_nodos; ++i) {
         
         // Se comprueba si ya se ha pasado por ese nodo
         if(repetidos[i])
@@ -21,7 +17,7 @@ int evaluar(int* individuo, grafo* g) {
         repetidos[i] = 1;
 
         // Se obtiene el coste de ir de un nodo al siguiente en el camino
-        int coste = g->coste[individuo[i]][individuo[(i+1)%g->num_nodos]];
+        int coste = costes[individuo[i]][individuo[(i+1)%num_nodos]];
         if(coste < 0)
             return -1;
         ret += coste;
