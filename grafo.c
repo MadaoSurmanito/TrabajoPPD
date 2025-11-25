@@ -29,3 +29,34 @@ void imprimir_grafo(grafo* g) {
     }
     printf("\n");
 }
+
+grafo cargar_grafo(const char *path) {
+
+    FILE *f = fopen(path, "r");
+    if (!f) {
+        perror("[ERROR]:\tNo existe el archivo");
+        exit(1);
+    } 
+
+    int num_nodos;
+    if(!fscanf(f, "%d", &num_nodos)) {
+        fclose(f);
+        perror("[ERROR]:\tError de formato");
+        exit(1);       
+    }
+
+    grafo ret = crear_grafo(num_nodos);
+
+    while(1) {
+        int a, b, c;
+        int continuar = fscanf(f, "%d %d %d", &a, &b, &c);
+        if(continuar <= 0)
+            break;
+        ret.coste[a][b] = c;
+        ret.coste[b][a] = c;
+    }
+
+    fclose(f);
+
+    return ret;
+}
