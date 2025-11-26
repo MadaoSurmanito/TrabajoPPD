@@ -6,7 +6,7 @@
 void seleccion(poblacion *poblacion, int *individuo, int **costes, int tamaño)
 {
     int tam_poblacion = poblacion->num_individuos;
-    int numNodos = poblacion->numNodos;
+    int numNodos = poblacion->num_nodos;
     
     int indice = rand() % tam_poblacion;
     int *individuoPoblacion = poblacion->individuos[indice];
