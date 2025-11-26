@@ -1,3 +1,7 @@
+#ifndef GRAFO_H
+#define GRAFO_H
+
+
 typedef struct {
     int** coste, num_nodos;
 } grafo;
@@ -22,3 +26,5 @@ void imprimir_grafo(grafo* g);
 // No es recomendable añadir espacios ni identación ni carácteres extra
 // Retornará 1 si se ha encontrado algún error
 grafo cargar_grafo(const char *path);
+
+#endif
