@@ -5,21 +5,19 @@
 #include "poblacion.h"
 #include "evaluar.h"
 
-grafo cargarGrafoFichero(const char*);
 int* algGen_CHamiltoniano(int, int, grafo*);
 
 int main() {
     int ngens = 200, TPoblacion = 20;   //ngens = numero de generaciones     TPoblacion = tamaño poblacion
-    int *MejorSolucion;
     
-    grafo MCostes = cargar_grafo("Pruebas/a280.tsp");
+    grafo MCostes = cargar_grafo("Pruebas/eil51.tsp");
 
     int *MejorSolucion = algGen_CHamiltoniano(ngens, TPoblacion, &MCostes);
 }
 
 int* algGen_CHamiltoniano(int ngens, int TPoblacion, grafo* MCostes){
-    poblacion *pob = generarPoblacionInicial(TPoblacion, MCostes->num_nodos);   // Genera los primeros individuos
-    int *MejorSolucion = pob->individuos[1];                                                // Inicialmente cualquiera vale
+    poblacion pob = crear_poblacion(TPoblacion, MCostes->num_nodos);   // Genera los primeros individuos
+    int *MejorSolucion = pob.individuos[1];                                                // Inicialmente cualquiera vale
     int CosteMejorSolucion = evaluar(MejorSolucion, MCostes->coste, MCostes->num_nodos);
 
     for (int i = 0; i < ngens; i++){

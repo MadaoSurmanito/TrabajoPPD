@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "grafo.h"
 
 grafo crear_grafo(int num_nodos){
@@ -30,37 +31,75 @@ void imprimir_grafo(grafo* g) {
     printf("\n");
 }
 
+void saltar_lineas(FILE *fp, size_t lineas) {
+    char line[256];
+    for(size_t i = 0; i < lineas;  ++i)
+        fgets(line, 256, fp);
+}
+
+void imprimir_linea(FILE *fp) {
+    char line[256];
+    fgets(line, 256, fp);
+    fputs(line, stdout);
+}
+
 grafo cargar_grafo(const char *path) {
 
     FILE *f = fopen(path, "r");
     if (!f) {
-        perror("[ERROR]:\tNo existe el archivo");
+        perror("[ERROR]: ");
         exit(1);
     } 
 
-    int num_nodos;
-    if(!fscanf(f, "NAME%*s\nTYPE%*s\nCOMMENT%*s\nDIMENSION%*s%d\nEDGE_WEIGHT_TYPE%*s\nNODE_COORD_SECTION\n", &num_nodos)) {
+    saltar_lineas(f, 3);
+
+    int num_nodos = 0;
+    
+    if(!fscanf(f, "DIMENSION%*s%d", &num_nodos)) {
         fclose(f);
-        perror("[ERROR]:\tError de formato");
+        perror("[ERROR]: ");
         exit(1);       
     }
 
-    printf("Num nodos: %d", num_nodos);
-
+    //printf("Num nodos: %d\n", num_nodos);
     grafo ret = crear_grafo(num_nodos);
 
-    /*
+    saltar_lineas(f, 3);
+
+    int** nodos = (int**)malloc(sizeof(int*) * num_nodos);
+    for(size_t i = 0; i < num_nodos; ++i)
+        nodos[i] = (int*)malloc(sizeof(int) * 2);
+
     while(1) {
+
         int a, b, c;
         int continuar = fscanf(f, "%d %d %d", &a, &b, &c);
+
         if(continuar <= 0)
             break;
-        ret.coste[a][b] = c;
-        ret.coste[b][a] = c;
+
+        nodos[a-1][0] = b;
+        nodos[a-1][1] = c;
     }
-    */
 
     fclose(f);
+
+    for(size_t i = 0; i < num_nodos; ++i)
+    for(size_t j = 0; j < num_nodos; ++j) {
+
+        if(i == j || ret.coste[i][j] != -1) 
+            continue;
+
+        int dist_x = nodos[i][0] - nodos[j][0],
+            dist_y = nodos[i][1] - nodos[j][1],
+            dist = (int)sqrt((double)(dist_x * dist_x) + (double)(dist_y * dist_y));
+
+        ret.coste[i][j] = dist;
+        ret.coste[j][i] = dist;
+    }
+
+    for(size_t i = 0; i < num_nodos; ++i) free(nodos[i]);
+    free(nodos);
 
     return ret;
 }
