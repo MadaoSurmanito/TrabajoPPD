@@ -5,7 +5,7 @@
 
 void seleccion(poblacion *poblacion, int *individuo, int **costes, int tamaño)
 {
-    int tam_poblacion = poblacion->tamaño;
+    int tam_poblacion = poblacion->num_individuos;
     int numNodos = poblacion->numNodos;
     
     int indice = rand() % tam_poblacion;
@@ -18,7 +18,7 @@ void seleccion(poblacion *poblacion, int *individuo, int **costes, int tamaño)
     {
         //En caso de que la probabilidad se de, si el valor del individuo nuestro es mejor se sustituye
         if(valorPoblacion == -1) memcpy(individuoPoblacion, individuo, tamaño * sizeof(int));
-        else if(valorPoblacion > valorIndividuo) memcpy(individuoPoblacion, individuo, tamaño * sizeof(int));
+        else if(valorIndividuo != -1 && valorPoblacion > valorIndividuo) memcpy(individuoPoblacion, individuo, tamaño * sizeof(int));
     }
     else memcpy(individuoPoblacion, individuo, tamaño * sizeof(int));
 }
