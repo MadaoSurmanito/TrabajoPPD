@@ -39,14 +39,17 @@ grafo cargar_grafo(const char *path) {
     } 
 
     int num_nodos;
-    if(!fscanf(f, "%d", &num_nodos)) {
+    if(!fscanf(f, "NAME%*s\nTYPE%*s\nCOMMENT%*s\nDIMENSION%*s%d\nEDGE_WEIGHT_TYPE%*s\nNODE_COORD_SECTION\n", &num_nodos)) {
         fclose(f);
         perror("[ERROR]:\tError de formato");
         exit(1);       
     }
 
+    printf("Num nodos: %d", num_nodos);
+
     grafo ret = crear_grafo(num_nodos);
 
+    /*
     while(1) {
         int a, b, c;
         int continuar = fscanf(f, "%d %d %d", &a, &b, &c);
@@ -55,6 +58,7 @@ grafo cargar_grafo(const char *path) {
         ret.coste[a][b] = c;
         ret.coste[b][a] = c;
     }
+    */
 
     fclose(f);
 
