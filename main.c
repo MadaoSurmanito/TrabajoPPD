@@ -53,8 +53,9 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes)
         mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
         printf("---------------------\n");
         printf("Ejecutando selección...\n");
-        seleccion(pob, hijo, TPoblacion); // Modifica o no la Poblacion
-
+        seleccion(pob, hijo, MCostes->coste, MCostes->num_nodos); // Intenta insertar al hijo en la población
+        printf("---------------------\n");
+        
         if (CosteMejorSolucion != -1 && CosteMejorSolucion > evaluar(hijo, MCostes->coste, MCostes->num_nodos))
         {
             MejorSolucion = hijo;
