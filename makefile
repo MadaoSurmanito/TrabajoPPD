@@ -1,5 +1,5 @@
 CXX = gcc
-CXXFLAGS = -fopenmp
+CXXFLAGS = -fopenmp -lm
 
 SRC = $(wildcard *.c)
 OBJ = $(SRC:.c=.o)
