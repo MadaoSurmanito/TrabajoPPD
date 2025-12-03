@@ -16,9 +16,7 @@ Emparejamiento:
 
 Cruce:
     ·   Genera un nuevo individuo a partir de los dos elegidos
-        ·   Una tercera parte del camino de uno
-        ·   Una tercera parte del camino del otro
-        ·   La última parte se genera para que tenga sentido
+        ·   Utilizaremos el cruce PMX (Partially Mapped Crossover) de la literatura
 
 Mutación:
     ·   Sucede si un número aleatorio generado está bajo un umbral
