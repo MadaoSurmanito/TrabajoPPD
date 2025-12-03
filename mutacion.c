@@ -1,10 +1,8 @@
 #include <stdlib.h>
 
-#define PROBABILIDAD_MUTACION 5
-
 // HAY QUE HACER EL SRAND(TIME(NULL)) EN EL MAIN
 
-void mutacion(int *individuo, int tamaño)
+void mutacion(int *individuo, int tamaño, int PROBABILIDAD_MUTACION)
 {
     int probabilidad = rand() % 100;          // Genera un número aleatorio entre 0 y 99
     if (probabilidad < PROBABILIDAD_MUTACION) // 5% de probabilidad de mut
