@@ -1,10 +1,13 @@
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "grafo.h"
 #include "poblacion.h"
 #include "evaluar.h"
 #include "cruce.h"
+#include "mutacion.h"
+#include "seleccion.h"
 
 int *algGen_CHamiltoniano(int, int, grafo *);
 
@@ -20,12 +23,26 @@ int main()
     printf("Ejecutando algoritmo genético...\n");
     int *MejorSolucion = algGen_CHamiltoniano(ngens, TPoblacion, &MCostes);
 
-    printf("Mejor Solucion Encontrada:\n");
+    printf("\nMejor Solucion Encontrada:\n");
+
     for (int i = 0; i < MCostes.num_nodos; i++)
-    {
         printf("%d ", MejorSolucion[i]);
-    }
-    printf("\n");
+
+    printf("\nCoste : %i\n", evaluar(MejorSolucion, &MCostes));
+
+    printf("\nSolución Óptima del fichero:\n");
+
+    int* SolucionOptima = cargar_solucion("Pruebas/eil51.opt.tour");
+    printf("%d ", SolucionOptima[50]);
+
+    for (int i = 0; i < MCostes.num_nodos; i++)
+        printf("%d ", SolucionOptima[i]);
+    
+    printf("\nCoste : %i\n", evaluar(SolucionOptima, &MCostes));
+
+    free(SolucionOptima);
+    liberar_grafo(&MCostes);
+
     return 0;
 }
 
@@ -35,7 +52,7 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes)
     poblacion pob = crear_poblacion(TPoblacion, MCostes->num_nodos); // Genera los primeros individuos
     int *MejorSolucion = pob.individuos[1];                          // Inicialmente cualquiera vale
     printf("Iniciando evolución genética...\n");
-    int CosteMejorSolucion = evaluar(MejorSolucion, MCostes->coste, MCostes->num_nodos);
+    int CosteMejorSolucion = evaluar(MejorSolucion, MCostes);
 
     printf("Evolucionando por %d generaciones...\n", ngens);
     for (int i = 0; i < ngens; i++)
@@ -50,17 +67,20 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes)
         hijo = cruce(padre, madre, MCostes); // Crea un nuevo individuo válido(hijo)
         printf("---------------------\n");
         printf("Ejecutando mutación...\n");
-        mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
+        mutacion(hijo, MCostes->num_nodos, 5); // Modifica al hijo dentro de una probabilidad
         printf("---------------------\n");
         printf("Ejecutando selección...\n");
-        seleccion(pob, hijo, MCostes->coste, MCostes->num_nodos); // Intenta insertar al hijo en la población
+        seleccion(&pob, MCostes, hijo); // Intenta insertar al hijo en la población
         printf("---------------------\n");
         
-        if (CosteMejorSolucion != -1 && CosteMejorSolucion > evaluar(hijo, MCostes->coste, MCostes->num_nodos))
+        if (CosteMejorSolucion != -1 && CosteMejorSolucion > evaluar(hijo, MCostes))
         {
             MejorSolucion = hijo;
-            CosteMejorSolucion = evaluar(hijo, MCostes->coste, MCostes->num_nodos);
+            CosteMejorSolucion = evaluar(hijo, MCostes);
         }
     }
+
+    //liberar_poblacion(&pob); (No funciona por alguna razón)
+
     return MejorSolucion;
 }

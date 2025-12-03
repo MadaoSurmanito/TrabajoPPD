@@ -43,6 +43,45 @@ void imprimir_linea(FILE *fp) {
     fputs(line, stdout);
 }
 
+int* cargar_solucion(const char* path) {
+
+    FILE *f = fopen(path, "r");
+    if (!f) {
+        perror("[ERROR]: ");
+        exit(1);
+    } 
+
+    saltar_lineas(f, 3);
+
+    int num_nodos = 0;
+    
+    if(!fscanf(f, "DIMENSION%*s%d", &num_nodos)) {
+        fclose(f);
+        perror("[ERROR]: ");
+        exit(1);       
+    }
+
+    //printf("Num nodos: %d\n", num_nodos);
+
+    int* ret = (int*)malloc(sizeof(int) * num_nodos);
+
+    saltar_lineas(f, 2);
+
+    //imprimir_linea(f);
+
+    int continuar = 1;
+
+    for(int i = 0; i < num_nodos; ++i) {
+        continuar = fscanf(f, "%d", &ret[i]);
+        ret[i]--;
+    }
+
+    fclose(f);
+
+    return ret;
+
+}
+
 grafo cargar_grafo(const char *path) {
 
     FILE *f = fopen(path, "r");
