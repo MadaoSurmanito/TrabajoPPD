@@ -1,3 +1,6 @@
+#ifndef POBLACION_H
+#define POBLACION_H
+
 typedef struct {
     int** individuos, num_individuos, num_nodos;
 } poblacion;
@@ -10,3 +13,5 @@ void liberar_poblacion(poblacion* g);
 
 // Intercambiar las poblaciones
 void intercambiar_poblaciones(poblacion* a, poblacion* b);
+
+#endif // POBLACION_H
