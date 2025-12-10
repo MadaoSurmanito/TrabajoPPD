@@ -3,5 +3,6 @@
 
 #include "grafo.h"
 void pruebaSecuencial(int , int , grafo *, int);
+void pruebaSecuencialSpike(int , int , grafo *, int);
 
 #endif // PRUEBAS_H
