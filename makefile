@@ -3,11 +3,11 @@ TARGET = main
 
 # Compilador y flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -g
+CFLAGS = -Wall -Wextra -O2 -g -fopenmp
 LDFLAGS = -lm
 
 # Fuentes del proyecto
-SRC = main.c cruce.c evaluar.c grafo.c mutacion.c poblacion.c seleccion.c algSec.c
+SRC = main.c cruce.c evaluar.c grafo.c mutacion.c poblacion.c seleccion.c algSec.c pruebas.c
 
 # Objetos generados
 OBJ = $(SRC:.c=.o)
