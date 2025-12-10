@@ -34,7 +34,7 @@ int main()
 
     printf("Ejecutando algoritmo genético...\n");
     pruebaSecuencial(TPoblacion, ngens, &MCostes);
-    /*int *MejorSolucion = algGen_CHamiltoniano(ngens, TPoblacion, &MCostes);
+    int *MejorSolucion = algGen_CHamiltoniano(ngens, TPoblacion, &MCostes);
 
     printf("\nMejor Solucion Encontrada:\n");
 
