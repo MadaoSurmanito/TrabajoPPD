@@ -7,7 +7,7 @@ CFLAGS = -Wall -Wextra -O2 -g
 LDFLAGS = -lm
 
 # Fuentes del proyecto
-SRC = main.c cruce.c evaluar.c grafo.c mutacion.c poblacion.c seleccion.c
+SRC = main.c cruce.c evaluar.c grafo.c mutacion.c poblacion.c seleccion.c algSec.c
 
 # Objetos generados
 OBJ = $(SRC:.c=.o)
