@@ -37,7 +37,7 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes)
         printf("---------------------\n");
         printf("Ejecutando selección...\n");
         seleccion(&pob, MCostes, hijo); // Intenta insertar al hijo en la población
-        printf("---------------------\n");
+
         
         if (CosteMejorSolucion != -1 && CosteMejorSolucion > evaluar(hijo, MCostes))
         {

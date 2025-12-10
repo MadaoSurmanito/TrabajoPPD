@@ -8,20 +8,21 @@
 #include "cruce.h"
 #include "mutacion.h"
 #include "seleccion.h"
-
-#include "algHam.h"
+#include "algSec.h"
+#include "pruebas.h"
 
 int main()
 {
     printf("Algoritmo Genético para el Ciclo Hamiltoniano\n");
     printf("=============================================\n");
-    int ngens = 10000, TPoblacion = 20; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
+    int ngens = 2000000, TPoblacion = 20; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
 
     printf("Cargando grafo desde archivo...\n");
-    grafo MCostes = cargar_grafo("../Pruebas/eil51.tsp");
+    grafo MCostes = cargar_grafo("Pruebas/eil51.tsp");
 
     printf("Ejecutando algoritmo genético...\n");
-    int *MejorSolucion = algGen_CHamiltoniano(ngens, TPoblacion, &MCostes);
+    pruebaSecuencial(TPoblacion, ngens, &MCostes);
+    /*int *MejorSolucion = algGen_CHamiltoniano(ngens, TPoblacion, &MCostes);
 
     printf("\nMejor Solucion Encontrada:\n");
 
@@ -32,7 +33,7 @@ int main()
 
     printf("\nSolución Óptima del fichero:\n");
 
-    int* SolucionOptima = cargar_solucion("../Pruebas/eil51.opt.tour");
+    int* SolucionOptima = cargar_solucion("Pruebas/eil51.opt.tour");
     printf("%d ", SolucionOptima[50]);
 
     for (int i = 0; i < MCostes.num_nodos; i++)
@@ -40,7 +41,7 @@ int main()
     
     printf("\nCoste : %i\n", evaluar(SolucionOptima, &MCostes));
 
-    free(SolucionOptima);
+    free(SolucionOptima);*/
     liberar_grafo(&MCostes);
 
     return 0;
