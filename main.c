@@ -15,7 +15,7 @@ int main()
 {
     printf("Algoritmo Genético para el Ciclo Hamiltoniano\n");
     printf("=============================================\n");
-    int ngens = 200, TPoblacion = 20; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
+    int ngens = 2000000, TPoblacion = 20; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
 
     printf("Cargando grafo desde archivo...\n");
     grafo MCostes = cargar_grafo("Pruebas/eil51.tsp");
