@@ -6,7 +6,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -O2 -g -fopenmp
 
 # Directorios
-SRC_DIRS = . estructuras operadores
+SRC_DIRS = . estructuras operadores operadoresparalelo
 
 # Buscar automáticamente todos los .c dentro de las carpetas
 SRC = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))

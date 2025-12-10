@@ -10,8 +10,10 @@
 #include "Operadores/seleccion.h"
 #include "Operadores/seeds.h"
 
-int *AlgSec(int ngens, int TPoblacion, grafo *MCostes)
+int *AlgPall(int ngens, int TPoblacion, grafo *MCostes)
 {
+    init_seeds();
+
     printf("Generando población inicial...\n");
     poblacion pob = crear_poblacion(TPoblacion, MCostes->num_nodos); // Genera los primeros individuos
     int *MejorSolucion = malloc(sizeof(int) * MCostes->num_nodos);   // Inicialmente cualquiera vale
@@ -23,28 +25,32 @@ int *AlgSec(int ngens, int TPoblacion, grafo *MCostes)
     printf("Evolucionando por %d generaciones...\n", ngens);
     for (int i = 0; i < ngens; i++)
     {
+        #pragma omp parallel for shared(pob)
         for (int k = 0; k < TPoblacion; k++) {
             int madre[MCostes->num_nodos], padre[MCostes->num_nodos], *hijo;
-            printf("Generación %d/%d\n", i + 1, ngens);
             emparejamiento(pob, padre, madre, MCostes->num_nodos); // Devuelve 2 individuos(padre y madre)
             hijo = cruce(padre, madre, MCostes); // Crea un nuevo individuo válido(hijo)
-
+            
             double prob_mutacion = (double)RAND() / (double)RAND_MAX;
             if (prob_mutacion < 0.5)
                 mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
-
-            seleccion(&pob, MCostes, hijo); // Intenta insertar al hijo en la población
             
-            if (CosteMejorSolucion == -1 || evaluar(hijo, MCostes) < CosteMejorSolucion)
+            #pragma omp critical
             {
-                memcpy(MejorSolucion, hijo, sizeof(int) * MCostes->num_nodos);
-                CosteMejorSolucion = evaluar(hijo, MCostes);
+                seleccion(&pob, MCostes, hijo); // Intenta insertar al hijo en la población
+                if (CosteMejorSolucion == -1 || evaluar(hijo, MCostes) < CosteMejorSolucion)
+                {
+                    memcpy(MejorSolucion, hijo, sizeof(int) * MCostes->num_nodos);
+                    CosteMejorSolucion = evaluar(hijo, MCostes);
+                }
             }
 
             free(hijo);
         }
     }
 
+    free(seeds);
+    seeds = NULL;
     //liberar_poblacion(&pob); (No funciona por alguna razón)
 
     return MejorSolucion;

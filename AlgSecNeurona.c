@@ -9,6 +9,7 @@
 #include "Operadores/mutacion.h"
 #include "Operadores/seleccion.h"
 #include "Estructuras/neurona.h"
+#include "Operadores/seeds.h"
 
 int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes, Neurona *n)
 {
@@ -23,24 +24,28 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes, Neurona *n)
     printf("Evolucionando por %d generaciones...\n", ngens);
     for (int i = 0; i < ngens; i++)
     {
-        int madre[MCostes->num_nodos], padre[MCostes->num_nodos], *hijo;
-        printf("Generación %d/%d\n", i + 1, ngens);
+        for (int k = 0; k < TPoblacion; k++) {
+            int madre[MCostes->num_nodos], padre[MCostes->num_nodos], *hijo;
+            printf("Generación %d/%d\n", i + 1, ngens);
 
-        emparejamiento(pob, padre, madre, MCostes->num_nodos); // Devvuelve 2 individuos(padre y madre)
+            emparejamiento(pob, padre, madre, MCostes->num_nodos); // Devvuelve 2 individuos(padre y madre)
 
-        hijo = cruce(padre, madre, MCostes); // Crea un nuevo individuo válido(hijo)
+            hijo = cruce(padre, madre, MCostes); // Crea un nuevo individuo válido(hijo)
 
-        // La prob de mutacion va fuera, no en la funcion
-        int prob_mutacion = rand() % 100;
-        if (prob_mutacion < probabilidad_spike(n))
-            mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
-        spike_neurona(n);                       // Actualiza el estado de la neurona
-        seleccion(&pob, MCostes, hijo);         // Intenta insertar al hijo en la población
+            // La prob de mutacion va fuera, no en la funcion
+            double prob_mutacion = (double)RAND() / (double)RAND_MAX;
+            if (prob_mutacion < probabilidad_spike(n))
+                mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
+            spike_neurona(n);                       // Actualiza el estado de la neurona
+            seleccion(&pob, MCostes, hijo);         // Intenta insertar al hijo en la población
 
-        if (CosteMejorSolucion == -1 || evaluar(hijo, MCostes) < CosteMejorSolucion)
-        {
-            memcpy(MejorSolucion, hijo, sizeof(int) * MCostes->num_nodos);
-            CosteMejorSolucion = evaluar(hijo, MCostes);
+            if (CosteMejorSolucion == -1 || evaluar(hijo, MCostes) < CosteMejorSolucion)
+            {
+                memcpy(MejorSolucion, hijo, sizeof(int) * MCostes->num_nodos);
+                CosteMejorSolucion = evaluar(hijo, MCostes);
+            }
+
+            free(hijo);
         }
     }
 

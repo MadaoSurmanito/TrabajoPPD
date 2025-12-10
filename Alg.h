@@ -17,6 +17,8 @@ int *AlgSec(int ngens, int TPoblacion, grafo *MCostes);
 
 int *AlgSecNeurona(int ngens, int TPoblacion, grafo *MCostes, int tipo_neurona);
 
+int *AlgPall(int ngens, int TPoblacion, grafo *MCostes);
+
 int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes, Neurona *n);
 
 #endif // ALG_H
