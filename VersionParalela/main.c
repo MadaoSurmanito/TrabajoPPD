@@ -11,8 +11,6 @@
 
 #include "algHam.h"
 
-int *algGen_CHamiltoniano(int, int, grafo *);
-
 int main()
 {
     printf("Algoritmo Genético para el Ciclo Hamiltoniano\n");
