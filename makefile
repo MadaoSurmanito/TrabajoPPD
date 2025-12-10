@@ -3,7 +3,8 @@ TARGET = main
 
 # Compilador y flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -lm -g
+CFLAGS = -Wall -Wextra -O2 -g
+LDFLAGS = -lm
 
 # Fuentes del proyecto
 SRC = main.c cruce.c evaluar.c grafo.c mutacion.c poblacion.c seleccion.c
@@ -16,7 +17,7 @@ all: $(TARGET)
 
 # Enlazar el programa final
 $(TARGET): $(OBJ)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ)
+	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ) $(LDFLAGS)
 
 # Regla genérica para compilar cada .c → .o
 %.o: %.c
