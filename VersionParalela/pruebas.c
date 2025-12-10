@@ -3,7 +3,8 @@
 //#include "neurona.h"
 #include <omp.h>
 #include <stdio.h>
-#include "algSec.h"
+
+#include "algHam.h"
 
 #define NUM_PRUEBAS 30
 

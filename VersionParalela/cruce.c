@@ -3,6 +3,8 @@
 #include <time.h>
 #include "cruce.h"
 
+#include "seeds.h"
+
 // Implementación del cruce PMX (Partially Mapped Crossover)
 //      padre1: primer padre
 //      padre2: segundo padre
@@ -90,8 +92,8 @@ int *cruce(int padre[], int madre[], grafo *MCostes)
     }
 
     // Seleccionar dos puntos de cruce aleatorios
-    int c1 = rand() % n;
-    int c2 = rand() % n;
+    int c1 = RAND() % n;
+    int c2 = RAND() % n;
     if (c1 > c2)
     {
         int temp = c1;
@@ -112,12 +114,12 @@ void emparejamiento(poblacion pob, int padre[], int madre[], int num_nodos)
 {
     int tam_poblacion = pob.num_individuos;
 
-    int indicePadre = rand() % tam_poblacion;
-    int indiceMadre = rand() % tam_poblacion;
+    int indicePadre = RAND() % tam_poblacion;
+    int indiceMadre = RAND() % tam_poblacion;
     // Asegurarse de que el padre y la madre no sean el mismo individuo
     while (indiceMadre == indicePadre)
     {
-        indiceMadre = rand() % tam_poblacion;
+        indiceMadre = RAND() % tam_poblacion;
     }
     // Copiar los individuos seleccionados en padre y madre
     for (int i = 0; i < num_nodos; i++)

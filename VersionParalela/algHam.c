@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "poblacion.h"
 #include "evaluar.h"
@@ -9,17 +10,24 @@
 #include "algHam.h"
 #include "grafo.h"
 
+#include "seeds.h"
+
 #define PROB_MUTACION 5 // Probabilidad de mutación en porcentaje
 
 int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes)
 {
+
     printf("Generando población inicial...\n");
     poblacion pob = crear_poblacion(TPoblacion, MCostes->num_nodos); // Genera los primeros individuos
     int *MejorSolucion = pob.individuos[1];                          // Inicialmente cualquiera vale
     printf("Iniciando evolución genética...\n");
     int CosteMejorSolucion = evaluar(MejorSolucion, MCostes);
 
+    srand(time(NULL));
+
     printf("Evolucionando por %d generaciones...\n", ngens);
+
+    #pragma omp parallel for shared(seeds, pob)
     for (int i = 0; i < ngens; i++)
     {
         int madre[MCostes->num_nodos], padre[MCostes->num_nodos], *hijo;
@@ -32,7 +40,7 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes)
         printf("Ejecutando mutación...\n");
 
         //La prob de mutacion va fuera, no en la funcion
-        int prob_mutacion = rand() % 100;
+        int prob_mutacion = RAND() % 100;
         if (prob_mutacion < PROB_MUTACION) mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
         printf("---------------------\n");
         printf("Ejecutando selección...\n");
