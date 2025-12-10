@@ -1,0 +1,6 @@
+programa
+*.pdf
+*.o
+mainPruebasCruce.c
+**/*.o
+main*
