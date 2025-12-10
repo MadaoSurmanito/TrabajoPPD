@@ -1,6 +1,5 @@
 #include "pruebas.h"
 #include "grafo.h"
-//#include "neurona.h"
 #include "evaluar.h"
 #include <omp.h>
 #include <stdio.h>
@@ -17,28 +16,42 @@ void pruebaSecuencial(int tPoblacion, int nGeneraciones, grafo *g, int costeOpti
     int errorAcumulado = 0;
     int *MejorSolucion;
 
+    // Abrimos el fichero. 
+    // "a" (append) añade al final. Usa "w" (write) si quieres borrar el fichero cada vez.
+    FILE *f = fopen("resultados.txt", "a");
+    if (f == NULL)
+    {
+        printf("Error al abrir el fichero resultados.txt\n");
+        exit(1);
+    }
+
     tiempo_inicio = omp_get_wtime();
+    
     for(int i = 0; i < NUM_PRUEBAS; i++)
     {
         MejorSolucion = algGen_CHamiltoniano(nGeneraciones, tPoblacion, g);
 
-        //Calculo error
+        // Calculo error
         costeEncontrado = evaluar(MejorSolucion, g);
         error = abs(costeEncontrado - costeOptimo);
         errorAcumulado += error;
+
+        // IMPORTANTE: Liberar memoria en cada iteración para evitar fugas
+        free(MejorSolucion);
     }
+    
     tiempo_fin = omp_get_wtime();
 
     double tiempo_total = (tiempo_fin - tiempo_inicio) / NUM_PRUEBAS;
     double errorPromedio = (double)errorAcumulado / NUM_PRUEBAS;
 
-    // Resultados
-    printf("Tiempo secuencial promedio para %d pruebas: %f segundos\n", NUM_PRUEBAS, tiempo_total);
-    printf("Error promedio: %f\n", errorPromedio);
-}
+    // Guardar en fichero con el formato: 1 tiempo error
+    // %.6f define la precisión de los decimales (puedes cambiarlo si quieres)
+    fprintf(f, "1 %f %f\n", tiempo_total, errorPromedio);
 
-/*void pruebaNeuronaParalela(int tPoblacion, int nGeneraciones, grafo *g, Neurona *neurona)
-{
-    int tiempo_inicio, tiempo_fin;
-    tiempo_inicio = omp_get_wtime();
-}*/
+    // Cerrar el fichero para guardar los cambios
+    fclose(f);
+    
+    // Opcional: Avisar por pantalla que ha terminado
+    printf("Prueba secuencial finalizada. Resultados guardados en resultados.txt\n");
+}
