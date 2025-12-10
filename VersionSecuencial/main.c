@@ -65,16 +65,12 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes)
         emparejamiento(pob, padre, madre, MCostes->num_nodos); // Devvuelve 2 individuos(padre y madre)
 
         hijo = cruce(padre, madre, MCostes); // Crea un nuevo individuo válido(hijo)
-        printf("---------------------\n");
-        printf("Ejecutando mutación...\n");
 
         //La prob de mutacion va fuera, no en la funcion
         int prob_mutacion = rand() % 100;
         if (prob_mutacion < PROB_MUTACION) mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
-        printf("---------------------\n");
-        printf("Ejecutando selección...\n");
+
         seleccion(&pob, MCostes, hijo); // Intenta insertar al hijo en la población
-        printf("---------------------\n");
         
         if (CosteMejorSolucion != -1 && CosteMejorSolucion > evaluar(hijo, MCostes))
         {
