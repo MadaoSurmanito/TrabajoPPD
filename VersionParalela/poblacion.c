@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "poblacion.h"
+
+#include "seeds.h"
 
 poblacion crear_poblacion(int num_individuos, int num_nodos)
 {
@@ -17,7 +18,7 @@ poblacion crear_poblacion(int num_individuos, int num_nodos)
     {
         ret.individuos[i] = (int *)malloc(num_nodos * sizeof(int));
         for (int j = 0; j < num_nodos; ++j)
-            ret.individuos[i][j] = rand() % num_nodos;
+            ret.individuos[i][j] = RAND() % num_nodos;
     }
 
     return ret;

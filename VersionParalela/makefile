@@ -7,7 +7,7 @@ CFLAGS = -Wall -Wextra -O2 -g -fopenmp
 LDFLAGS = -lm
 
 # Fuentes del proyecto
-SRC = main.c cruce.c evaluar.c grafo.c mutacion.c poblacion.c seleccion.c algSec.c pruebas.c
+SRC = $(wildcard *.c)
 
 # Objetos generados
 OBJ = $(SRC:.c=.o)
@@ -26,6 +26,10 @@ $(TARGET): $(OBJ)
 # Ejecutar el programa
 run: $(TARGET)
 	./$(TARGET)
+
+# Debugear el programa
+debug: $(TARGET)
+	gdb $(TARGET)
 
 # Limpiar archivos generados
 clean:

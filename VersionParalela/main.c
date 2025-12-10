@@ -1,4 +1,3 @@
-#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,9 +9,22 @@
 #include "seleccion.h"
 
 #include "algHam.h"
+#include "seeds.h"
 
 int main()
 {
+
+    nthreads = 4;
+
+    printf("Número de hilos: %i\n", nthreads);
+
+    seeds = malloc(sizeof(unsigned int) * nthreads);
+    
+    for(unsigned int i = 0; i < nthreads; ++i)
+        seeds[i] = rand() % nthreads;
+
+    omp_set_num_threads(nthreads);  
+
     printf("Algoritmo Genético para el Ciclo Hamiltoniano\n");
     printf("=============================================\n");
     int ngens = 10000, TPoblacion = 20; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
@@ -40,6 +52,7 @@ int main()
     
     printf("\nCoste : %i\n", evaluar(SolucionOptima, &MCostes));
 
+    free(seeds);
     free(SolucionOptima);
     liberar_grafo(&MCostes);
 
