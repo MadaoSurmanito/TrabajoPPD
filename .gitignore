@@ -3,3 +3,4 @@ programa
 *.o
 
 **/*.o
+main
