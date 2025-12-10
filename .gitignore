@@ -3,4 +3,3 @@ programa
 *.o
 mainPruebasCruce.c
 **/*.o
-main*
