@@ -19,9 +19,11 @@ int main()
 
     printf("Cargando grafo desde archivo...\n");
     grafo MCostes = cargar_grafo("Pruebas/eil51.tsp");
+    int* SolucionOptima = cargar_solucion("Pruebas/eil51.opt.tour");
+    int costeOptimo = evaluar(SolucionOptima, &MCostes);
 
     printf("Ejecutando algoritmo genético...\n");
-    pruebaSecuencial(TPoblacion, ngens, &MCostes);
+    pruebaSecuencial(TPoblacion, ngens, &MCostes, costeOptimo);
     /*int *MejorSolucion = algGen_CHamiltoniano(ngens, TPoblacion, &MCostes);
 
     printf("\nMejor Solucion Encontrada:\n");

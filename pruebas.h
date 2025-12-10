@@ -2,6 +2,6 @@
 #define PRUEBAS_H
 
 #include "grafo.h"
-void pruebaSecuencial(int , int , grafo *);
+void pruebaSecuencial(int , int , grafo *, int);
 
 #endif // PRUEBAS_H
