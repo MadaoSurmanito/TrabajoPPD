@@ -15,6 +15,9 @@ void liberar_grafo(grafo* g);
 // Imprime el grafo a consola
 void imprimir_grafo(grafo* g);
 
+// Carga la solución óptima en un vector dinámico
+int* cargar_solucion(const char* path);
+
 // Carga la información de un archivo de texto a un grafo
 // El formato es el siguiente
 /*
@@ -24,7 +27,6 @@ void imprimir_grafo(grafo* g);
     ...             <- El resto de caminos
 */
 // No es recomendable añadir espacios ni identación ni carácteres extra
-// Retornará 1 si se ha encontrado algún error
 grafo cargar_grafo(const char *path);
 
 #endif

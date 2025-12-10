@@ -4,15 +4,15 @@
 #include <string.h>
 #include "seleccion.h"
 
-void seleccion(poblacion *poblacion, int *individuo, int **costes, int tamaño)
+void seleccion(poblacion *poblacion, grafo* g, int *individuo)
 {
     int tam_poblacion = poblacion->num_individuos;
     int numNodos = poblacion->num_nodos;
 
     int indice = rand() % tam_poblacion;
     int *individuoPoblacion = poblacion->individuos[indice];
-    int valorPoblacion = evaluar(individuoPoblacion, costes, numNodos);
-    int valorIndividuo = evaluar(individuo, costes, numNodos);
+    int valorPoblacion = evaluar(individuoPoblacion, g);
+    int valorIndividuo = evaluar(individuo, g);
     int probabilidad = rand() % 100; // Genera un número aleatorio entre 0 y 99
 
 
@@ -20,10 +20,10 @@ void seleccion(poblacion *poblacion, int *individuo, int **costes, int tamaño)
     {
         // En caso de que la probabilidad se de, si el valor del individuo nuestro es mejor se sustituye
         if (valorPoblacion == -1)
-            memcpy(individuoPoblacion, individuo, tamaño * sizeof(int));
+            memcpy(individuoPoblacion, individuo, g->num_nodos * sizeof(int));
         else if (valorIndividuo != -1 && valorPoblacion > valorIndividuo)
-            memcpy(individuoPoblacion, individuo, tamaño * sizeof(int));
+            memcpy(individuoPoblacion, individuo, g->num_nodos * sizeof(int));
     }
     else
-        memcpy(individuoPoblacion, individuo, tamaño * sizeof(int));
+        memcpy(individuoPoblacion, individuo, g->num_nodos * sizeof(int));
 }

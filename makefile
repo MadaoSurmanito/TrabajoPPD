@@ -3,7 +3,7 @@ TARGET = main
 
 # Compilador y flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2
+CFLAGS = -Wall -Wextra -O2 -lm -g
 
 # Fuentes del proyecto
 SRC = main.c cruce.c evaluar.c grafo.c mutacion.c poblacion.c seleccion.c

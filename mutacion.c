@@ -1,5 +1,5 @@
 #include <stdlib.h>
-
+#include "mutacion.h"
 // HAY QUE HACER EL SRAND(TIME(NULL)) EN EL MAIN
 
 void mutacion(int *individuo, int tamaño, int PROBABILIDAD_MUTACION)
