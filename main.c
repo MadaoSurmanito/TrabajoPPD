@@ -9,6 +9,8 @@
 #include "mutacion.h"
 #include "seleccion.h"
 
+#define PROB_MUTACION 5 // Probabilidad de mutación en porcentaje
+
 int *algGen_CHamiltoniano(int, int, grafo *);
 
 int main()
@@ -65,7 +67,10 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes)
         hijo = cruce(padre, madre, MCostes); // Crea un nuevo individuo válido(hijo)
         printf("---------------------\n");
         printf("Ejecutando mutación...\n");
-        mutacion(hijo, MCostes->num_nodos, 5); // Modifica al hijo dentro de una probabilidad
+
+        //La prob de mutacion va fuera, no en la funcion
+        int prob_mutacion = rand() % 100;
+        if (prob_mutacion < PROB_MUTACION) mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
         printf("---------------------\n");
         printf("Ejecutando selección...\n");
         seleccion(&pob, MCostes, hijo); // Intenta insertar al hijo en la población
