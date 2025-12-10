@@ -1,5 +1,5 @@
-#ifndef ALGSEC_H
-#define ALGSEC_H
+#ifndef ALGHAM_H
+#define ALGHAM_H
 
 #include "grafo.h"
 

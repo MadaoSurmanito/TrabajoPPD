@@ -1,9 +1,12 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "poblacion.h"
 #include "evaluar.h"
 #include "cruce.h"
 #include "mutacion.h"
 #include "seleccion.h"
-#include "algSec.h"
+#include "algHam.h"
 #include "grafo.h"
 
 #define PROB_MUTACION 5 // Probabilidad de mutación en porcentaje
