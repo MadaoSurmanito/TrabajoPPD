@@ -1,0 +1,6 @@
+programa
+*.pdf
+*.o
+
+**/*.o
+main
