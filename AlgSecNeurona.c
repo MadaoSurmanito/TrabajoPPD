@@ -1,7 +1,6 @@
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "Estructuras/grafo.h"
 #include "Estructuras/poblacion.h"
@@ -14,20 +13,16 @@
 
 int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes, Neurona *n)
 {
-    printf("Generando población inicial...\n");
     poblacion pob = crear_poblacion(TPoblacion, MCostes->num_nodos); // Genera los primeros individuos
     int *MejorSolucion = malloc(sizeof(int) * MCostes->num_nodos);   // Inicialmente cualquiera vale
     memcpy(MejorSolucion, pob.individuos[1], sizeof(int) * MCostes->num_nodos);  
 
-    printf("Iniciando evolución genética...\n");
     int CosteMejorSolucion = evaluar(MejorSolucion, MCostes);
 
-    printf("Evolucionando por %d generaciones...\n", ngens);
     for (int i = 0; i < ngens; i++)
     {
         for (int k = 0; k < TPoblacion; k++) {
             int madre[MCostes->num_nodos], padre[MCostes->num_nodos], *hijo;
-            printf("Generación %d/%d\n", i + 1, ngens);
 
             emparejamiento(pob, padre, madre, MCostes->num_nodos); // Devvuelve 2 individuos(padre y madre)
 
@@ -62,20 +57,28 @@ int *AlgSecNeurona(int ngens, int TPoblacion, grafo *MCostes, int tipo_neurona)
     {
     case 1:
         n = crear_neurona_RS();
+        break;
     case 2:
         n = crear_neurona_IB();
+        break;
     case 3:
         n = crear_neurona_CH();
+        break;
     case 4:
         n = crear_neurona_FS();
+        break;
     case 5:
         n = crear_neurona_TC1();
+        break;
     case 6:
         n = crear_neurona_TC2();
+        break;
     case 7:
         n = crear_neurona_RZ();
+        break;
     case 8:
         n = crear_neurona_LTS();
+        break;
     default:
         printf("Tipo de neurona no válido. Usando Regular Spiking (RS) por defecto.\n");
         n = crear_neurona_RS();

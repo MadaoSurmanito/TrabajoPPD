@@ -68,7 +68,7 @@ void pruebaSecuencialSpike(int tPoblacion, int nGeneraciones, grafo *g, int cost
     // 1. Declaramos un buffer para guardar el nombre del fichero
     char nombreFichero[50]; 
 
-    for (int neurona = 0; neurona < 8; neurona++)
+    for (int neurona = 1; neurona <= 8; neurona++)
     {
         tiempo_inicio = omp_get_wtime();
         errorAcumulado = 0;
@@ -111,4 +111,119 @@ void pruebaSecuencialSpike(int tPoblacion, int nGeneraciones, grafo *g, int cost
     }
 
     printf("Prueba secuencial finalizada.\n");
+}
+
+void pruebaParalela(int tPoblacion, int nGeneraciones, grafo *g, int costeOptimo)
+{
+    double tiempo_inicio, tiempo_fin;
+    int costeEncontrado;
+    int error;
+    int errorAcumulado;
+    int *MejorSolucion;
+
+    FILE *f = fopen("resultados.txt", "a");
+    if (f == NULL)
+    {
+        printf("Error al abrir el fichero resultados.txt\n");
+        exit(1);
+    }
+
+    printf("Iniciando pruebas paralelas...\n");
+
+    // Probamos con hilos de 2 en 2
+    for (int num_hilos = 2; num_hilos <= 12; num_hilos += 2)
+    {
+        errorAcumulado = 0;
+
+        tiempo_inicio = omp_get_wtime();
+
+        for (int i = 0; i < NUM_PRUEBAS; i++)
+        {
+            MejorSolucion = AlgPall(nGeneraciones, tPoblacion, g, num_hilos);
+
+            // Calcular error
+            costeEncontrado = evaluar(MejorSolucion, g);
+            error = abs(costeEncontrado - costeOptimo);
+            errorAcumulado += error;
+
+            free(MejorSolucion);
+        }
+
+        tiempo_fin = omp_get_wtime();
+
+        double tiempo_total = (tiempo_fin - tiempo_inicio) / NUM_PRUEBAS;
+        double errorPromedio = (double)errorAcumulado / NUM_PRUEBAS;
+
+        /*
+         * Formato:
+         * num_hilos tiempo error
+         */
+        fprintf(f, "%d %f %f\n", num_hilos, tiempo_total, errorPromedio);
+
+        printf("Hilos: %d | Tiempo medio: %.6f | Error medio: %.2f\n",
+               num_hilos, tiempo_total, errorPromedio);
+    }
+
+    fclose(f);
+    printf("Pruebas paralelas finalizadas. Resultados guardados en resultados.txt\n");
+}
+
+void pruebaParalelaSpike(int tPoblacion, int nGeneraciones, grafo *g, int costeOptimo)
+{
+    double tiempo_inicio, tiempo_fin;
+    int costeEncontrado;
+    int error;
+    int errorAcumulado;
+    int *MejorSolucion;
+    
+    FILE *f;
+    char nombreFichero[50];
+
+    printf("Iniciando pruebas paralelas Spike...\n");
+
+    // Probamos con hilos de 2 en 2
+    for (int num_hilos = 2; num_hilos <= 12; num_hilos += 2)
+    {
+        for (int neurona = 1; neurona <= 8; neurona++)
+        {
+            errorAcumulado = 0;
+
+            tiempo_inicio = omp_get_wtime();
+
+            for (int i = 0; i < NUM_PRUEBAS; i++)
+            {
+                // Llamamos a tu AlgPall con neurona y número de hilos
+                MejorSolucion = AlgPallNeurona(nGeneraciones, tPoblacion, g, num_hilos, neurona);
+
+                // Calcular error
+                costeEncontrado = evaluar(MejorSolucion, g);
+                error = abs(costeEncontrado - costeOptimo);
+                errorAcumulado += error;
+
+                free(MejorSolucion);
+            }
+
+            tiempo_fin = omp_get_wtime();
+
+            double tiempo_total = (tiempo_fin - tiempo_inicio) / NUM_PRUEBAS;
+            double errorPromedio = (double)errorAcumulado / NUM_PRUEBAS;
+
+            // Abrimos fichero específico para cada neurona
+            sprintf(nombreFichero, "resultadosSpike%d.txt", neurona);
+            f = fopen(nombreFichero, "a");
+            if (!f)
+            {
+                printf("Error al abrir el fichero %s\n", nombreFichero);
+                exit(1);
+            }
+
+            fprintf(f, "%d %f %f\n", num_hilos, tiempo_total, errorPromedio);
+            fclose(f);
+
+            printf("Neuron: %d | Hilos: %d | Tiempo medio: %.6f | Error medio: %.2f\n",
+                   neurona, num_hilos, tiempo_total, errorPromedio);
+        }
+    }
+
+    printf("Pruebas paralelas Spike finalizadas. Resultados guardados en ficheros.\n");
 }

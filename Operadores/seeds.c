@@ -1,19 +1,28 @@
 #include "seeds.h"
 #include <stdio.h>
-#include <time.h>
 
 unsigned int nthreads = 0;
 unsigned int *seeds = NULL;
 
-void init_seeds() {
+void init_seeds(void)
+{
+#ifdef _OPENMP
     nthreads = omp_get_max_threads();
+#else
+    nthreads = 1;
+#endif
+
     seeds = malloc(sizeof(unsigned int) * nthreads);
-    if (!seeds) {
+    if (!seeds)
+    {
         perror("malloc seeds");
         exit(EXIT_FAILURE);
     }
 
-    for (unsigned int i = 0; i < nthreads; i++) {
-        seeds[i] = (unsigned int)time(NULL) + i;
-    }
+    unsigned int base = (unsigned int)time(NULL);
+    for (unsigned int i = 0; i < nthreads; i++)
+        seeds[i] = base ^ (i + 1);
+
+    srand(base); // para el caso secuencial
 }
+
