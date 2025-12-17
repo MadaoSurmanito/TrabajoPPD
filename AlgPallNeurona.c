@@ -73,6 +73,7 @@ int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes, int num_hilos, in
                     mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
                 spike_neurona(&n);
                 int coste_hijo = evaluar(hijo, MCostes);
+                
                 #pragma omp critical
                 {
                     seleccion(&pob, MCostes, hijo);

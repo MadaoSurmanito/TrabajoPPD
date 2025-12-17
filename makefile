@@ -1,12 +1,13 @@
 # Nombre del ejecutable
 TARGET = main
 
-# Compilador y flags
+# Compilador
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -g -fopenmp
 
 # Directorios
-SRC_DIRS = . estructuras operadores operadoresparalelo
+SRC_DIRS = . Estructuras Operadores
+
+INCLUDE=$(foreach dir,$(SRC_DIRS),-I$(dir) )
 
 # Buscar automáticamente todos los .c dentro de las carpetas
 SRC = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
@@ -16,6 +17,9 @@ OBJ = $(SRC:.c=.o)
 
 # Librerías para enlazar
 LDFLAGS = -lm
+
+# Flags
+CFLAGS = -Wall -Wextra -O2 -g -fopenmp $(INCLUDE)
 
 # Regla por defecto
 all: $(TARGET)
