@@ -33,14 +33,17 @@ void imprimir_grafo(grafo* g) {
 
 void saltar_lineas(FILE *fp, size_t lineas) {
     char line[256];
-    for(size_t i = 0; i < lineas;  ++i)
-        fgets(line, 256, fp);
+    for (size_t i = 0; i < lineas; ++i) {
+        if (!fgets(line, sizeof(line), fp))
+            break;
+    }
 }
 
 void imprimir_linea(FILE *fp) {
     char line[256];
-    fgets(line, 256, fp);
-    fputs(line, stdout);
+    if (fgets(line, sizeof(line), fp)) {
+        fputs(line, stdout);
+    }
 }
 
 int* cargar_solucion(const char* path) {
@@ -69,10 +72,13 @@ int* cargar_solucion(const char* path) {
 
     //imprimir_linea(f);
 
-    int continuar = 1;
-
-    for(int i = 0; i < num_nodos; ++i) {
-        continuar = fscanf(f, "%d", &ret[i]);
+    for (int i = 0; i < num_nodos; ++i) {
+        if (fscanf(f, "%d", &ret[i]) != 1) {
+            fclose(f);
+            free(ret);
+            perror("[ERROR]: ");
+            exit(1);
+        }
         ret[i]--;
     }
 
@@ -106,7 +112,7 @@ grafo cargar_grafo(const char *path) {
     saltar_lineas(f, 3);
 
     int** nodos = (int**)malloc(sizeof(int*) * num_nodos);
-    for(size_t i = 0; i < num_nodos; ++i)
+    for(int i = 0; i < num_nodos; ++i)
         nodos[i] = (int*)malloc(sizeof(int) * 2);
 
     while(1) {
@@ -123,8 +129,8 @@ grafo cargar_grafo(const char *path) {
 
     fclose(f);
 
-    for(size_t i = 0; i < num_nodos; ++i)
-    for(size_t j = 0; j < num_nodos; ++j) {
+    for(int i = 0; i < num_nodos; ++i)
+    for(int j = 0; j < num_nodos; ++j) {
 
         if(i == j || ret.coste[i][j] != -1) 
             continue;
@@ -137,7 +143,7 @@ grafo cargar_grafo(const char *path) {
         ret.coste[j][i] = dist;
     }
 
-    for(size_t i = 0; i < num_nodos; ++i) free(nodos[i]);
+    for(int i = 0; i < num_nodos; ++i) free(nodos[i]);
     free(nodos);
 
     return ret;

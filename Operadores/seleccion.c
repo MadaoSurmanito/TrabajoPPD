@@ -9,7 +9,6 @@
 void seleccion(poblacion *poblacion, grafo* g, int *individuo)
 {
     int tam_poblacion = poblacion->num_individuos;
-    int numNodos = poblacion->num_nodos;
 
     int indice = RAND() % tam_poblacion;
     int *individuoPoblacion = poblacion->individuos[indice];

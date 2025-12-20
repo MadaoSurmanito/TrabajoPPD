@@ -5,7 +5,7 @@
 int evaluar(int *individuo, grafo* g)
 {
 
-    unsigned char *repetidos = malloc(g->num_nodos);
+    unsigned char *repetidos = malloc(g->num_nodos * sizeof(unsigned char));
     memset(repetidos, 0, g->num_nodos);
 
     int ret = 0;

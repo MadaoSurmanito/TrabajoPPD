@@ -42,3 +42,8 @@ fclean: clean
 
 # Recompilar desde cero
 rebuild: fclean all
+
+# Limpiar TODO (binarios + txt)
+cleanall: fclean
+	rm -f *.txt
+

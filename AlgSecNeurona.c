@@ -1,6 +1,7 @@
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "Estructuras/grafo.h"
 #include "Estructuras/poblacion.h"
@@ -15,7 +16,7 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes, Neurona *n)
 {
     poblacion pob = crear_poblacion(TPoblacion, MCostes->num_nodos); // Genera los primeros individuos
     int *MejorSolucion = malloc(sizeof(int) * MCostes->num_nodos);   // Inicialmente cualquiera vale
-    memcpy(MejorSolucion, pob.individuos[1], sizeof(int) * MCostes->num_nodos);  
+    memcpy(MejorSolucion, pob.individuos[0], sizeof(int) * MCostes->num_nodos);  
 
     int CosteMejorSolucion = evaluar(MejorSolucion, MCostes);
 
@@ -24,28 +25,28 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes, Neurona *n)
         for (int k = 0; k < TPoblacion; k++) {
             int madre[MCostes->num_nodos], padre[MCostes->num_nodos], *hijo;
 
-            emparejamiento(pob, padre, madre, MCostes->num_nodos); // Devvuelve 2 individuos(padre y madre)
+            emparejamiento(pob, padre, madre, MCostes->num_nodos); // Devuelve 2 individuos(padre y madre)
 
             hijo = cruce(padre, madre, MCostes); // Crea un nuevo individuo válido(hijo)
 
-            // La prob de mutacion va fuera, no en la funcion
             double prob_mutacion = (double)RAND() / (double)RAND_MAX;
             if (prob_mutacion < probabilidad_spike(n))
                 mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
             spike_neurona(n);                       // Actualiza el estado de la neurona
             seleccion(&pob, MCostes, hijo);         // Intenta insertar al hijo en la población
 
-            if (CosteMejorSolucion == -1 || evaluar(hijo, MCostes) < CosteMejorSolucion)
+            int costeHijo = evaluar(hijo, MCostes);
+            if (CosteMejorSolucion == -1 || costeHijo < CosteMejorSolucion)
             {
                 memcpy(MejorSolucion, hijo, sizeof(int) * MCostes->num_nodos);
-                CosteMejorSolucion = evaluar(hijo, MCostes);
+                CosteMejorSolucion = costeHijo;
             }
 
             free(hijo);
         }
     }
 
-    // liberar_poblacion(&pob); (No funciona por alguna razón)
+    liberar_poblacion(&pob);
 
     return MejorSolucion;
 }
@@ -79,9 +80,6 @@ int *AlgSecNeurona(int ngens, int TPoblacion, grafo *MCostes, int tipo_neurona)
     case 8:
         n = crear_neurona_LTS();
         break;
-    default:
-        printf("Tipo de neurona no válido. Usando Regular Spiking (RS) por defecto.\n");
-        n = crear_neurona_RS();
     }
     return algGen_CHamiltoniano(ngens, TPoblacion, MCostes, &n);
 }
