@@ -9,18 +9,20 @@
 
 #define NUM_PRUEBAS 30
 
-// ======================= PRUEBAS SECUENCIALES =======================
 void pruebaSecuencial(int tPoblacion, int nGeneraciones, grafo *g, int costeOptimo)
 {
     double tiempo_inicio, tiempo_fin;
-    int costeEncontrado, error;
+    int costeEncontrado;
+    int error;
     int errorAcumulado = 0;
     int *MejorSolucion;
 
     FILE *f = fopen("resultados.txt", "a");
-    if (!f) { printf("Error al abrir resultados.txt\n"); exit(1); }
-
-    printf("\n=== Iniciando pruebas secuenciales ===\n");
+    if (f == NULL)
+    {
+        printf("Error al abrir el fichero resultados.txt\n");
+        exit(1);
+    }
 
     tiempo_inicio = omp_get_wtime();
 
@@ -28,6 +30,7 @@ void pruebaSecuencial(int tPoblacion, int nGeneraciones, grafo *g, int costeOpti
     {
         MejorSolucion = AlgSec(nGeneraciones, tPoblacion, g);
 
+        // Calculo error
         costeEncontrado = evaluar(MejorSolucion, g);
         error = abs(costeEncontrado - costeOptimo);
         errorAcumulado += error;
@@ -36,124 +39,212 @@ void pruebaSecuencial(int tPoblacion, int nGeneraciones, grafo *g, int costeOpti
     }
 
     tiempo_fin = omp_get_wtime();
+
     double tiempo_total = (tiempo_fin - tiempo_inicio) / NUM_PRUEBAS;
     double errorPromedio = (double)errorAcumulado / NUM_PRUEBAS;
 
-    fprintf(f, "1 %f %f\n", tiempo_total, errorPromedio);
-    fclose(f);
+    fprintf(f, "0 %f %f\n", tiempo_total, errorPromedio);
 
-    printf("Neuron None | Secuencial | Tiempo medio: %.6f | Error medio: %.2f\n", tiempo_total, errorPromedio);
+    fclose(f);
 }
 
-// ======================= PRUEBAS SECUENCIALES SPIKE =======================
 void pruebaSecuencialSpike(int tPoblacion, int nGeneraciones, grafo *g, int costeOptimo)
 {
-    printf("\n=== Iniciando pruebas secuenciales Spike ===\n");
+    double tiempo_inicio, tiempo_fin;
+    int costeEncontrado;
+    int error;
+    int errorAcumulado = 0;
+    int *MejorSolucion;
+
+    char nombreFichero[50];
 
     for (int neurona = 1; neurona <= 8; neurona++)
     {
-        int errorAcumulado = 0;
-        double tiempo_inicio = omp_get_wtime();
-        char nombreFichero[50];
+        tiempo_inicio = omp_get_wtime();
+        errorAcumulado = 0;
 
         for (int i = 0; i < NUM_PRUEBAS; i++)
         {
-            int *MejorSolucion = AlgSecNeurona(nGeneraciones, tPoblacion, g, neurona);
+            MejorSolucion = AlgSecNeurona(nGeneraciones, tPoblacion, g, neurona);
 
-            int costeEncontrado = evaluar(MejorSolucion, g);
-            int error = abs(costeEncontrado - costeOptimo);
+            costeEncontrado = evaluar(MejorSolucion, g);
+            error = abs(costeEncontrado - costeOptimo);
             errorAcumulado += error;
 
             free(MejorSolucion);
         }
+        tiempo_fin = omp_get_wtime();
 
-        double tiempo_fin = omp_get_wtime();
         double tiempo_total = (tiempo_fin - tiempo_inicio) / NUM_PRUEBAS;
         double errorPromedio = (double)errorAcumulado / NUM_PRUEBAS;
 
         sprintf(nombreFichero, "resultadosSpike%d.txt", neurona);
-        FILE *f = fopen(nombreFichero, "a");
-        if (!f) { printf("Error al abrir %s\n", nombreFichero); exit(1); }
-        fprintf(f, "1 %f %f\n", tiempo_total, errorPromedio);
-        fclose(f);
 
-        printf("Neuron %d | Secuencial | Tiempo medio: %.6f | Error medio: %.2f\n",
-               neurona, tiempo_total, errorPromedio);
+        FILE *f = fopen(nombreFichero, "a");
+
+        if (f == NULL)
+        {
+            printf("Error al abrir el fichero %s\n", nombreFichero);
+            exit(1);
+        }
+
+        fprintf(f, "0 %f %f\n", tiempo_total, errorPromedio);
+        fclose(f);
     }
 }
 
-// ======================= PRUEBAS PARALELAS =======================
 void pruebaParalela(int tPoblacion, int nGeneraciones, grafo *g, int costeOptimo)
 {
-    printf("\n=== Iniciando pruebas paralelas ===\n");
+    double tiempo_inicio, tiempo_fin;
+    int costeEncontrado;
+    int error;
+    int errorAcumulado;
+    int *MejorSolucion;
 
     FILE *f = fopen("resultados.txt", "a");
-    if (!f) { printf("Error al abrir resultados.txt\n"); exit(1); }
+    if (f == NULL)
+    {
+        printf("Error al abrir el fichero resultados.txt\n");
+        exit(1);
+    }
+
+    int num_hilos = 1;
+    errorAcumulado = 0;
+
+    tiempo_inicio = omp_get_wtime();
+
+    for (int i = 0; i < NUM_PRUEBAS; i++)
+    {
+        MejorSolucion = AlgPall(nGeneraciones, tPoblacion, g, num_hilos);
+
+        // Calcular error
+        costeEncontrado = evaluar(MejorSolucion, g);
+        error = abs(costeEncontrado - costeOptimo);
+        errorAcumulado += error;
+
+        free(MejorSolucion);
+    }
+
+    tiempo_fin = omp_get_wtime();
+
+    double tiempo_total = (tiempo_fin - tiempo_inicio) / NUM_PRUEBAS;
+    double errorPromedio = (double)errorAcumulado / NUM_PRUEBAS;
+
+    fprintf(f, "%d %f %f\n", num_hilos, tiempo_total, errorPromedio);
 
     for (int num_hilos = 2; num_hilos <= 12; num_hilos += 2)
     {
-        int errorAcumulado = 0;
-        double tiempo_inicio = omp_get_wtime();
+        errorAcumulado = 0;
+
+        tiempo_inicio = omp_get_wtime();
 
         for (int i = 0; i < NUM_PRUEBAS; i++)
         {
-            int *MejorSolucion = AlgPall(nGeneraciones, tPoblacion, g, num_hilos);
+            MejorSolucion = AlgPall(nGeneraciones, tPoblacion, g, num_hilos);
 
-            int costeEncontrado = evaluar(MejorSolucion, g);
-            int error = abs(costeEncontrado - costeOptimo);
+            // Calcular error
+            costeEncontrado = evaluar(MejorSolucion, g);
+            error = abs(costeEncontrado - costeOptimo);
             errorAcumulado += error;
 
             free(MejorSolucion);
         }
 
-        double tiempo_fin = omp_get_wtime();
+        tiempo_fin = omp_get_wtime();
+
         double tiempo_total = (tiempo_fin - tiempo_inicio) / NUM_PRUEBAS;
         double errorPromedio = (double)errorAcumulado / NUM_PRUEBAS;
 
         fprintf(f, "%d %f %f\n", num_hilos, tiempo_total, errorPromedio);
-        printf("Neuron None | Hilos %d | Tiempo medio: %.6f | Error medio: %.2f\n", num_hilos, tiempo_total, errorPromedio);
     }
 
     fclose(f);
 }
 
-// ======================= PRUEBAS PARALELAS SPIKE =======================
 void pruebaParalelaSpike(int tPoblacion, int nGeneraciones, grafo *g, int costeOptimo)
 {
-    printf("\n=== Iniciando pruebas paralelas Spike ===\n");
+    double tiempo_inicio, tiempo_fin;
+    int costeEncontrado;
+    int error;
+    int errorAcumulado;
+    int *MejorSolucion;
 
+    FILE *f;
+    char nombreFichero[50];
+
+    int num_hilos = 1;
+    for (int neurona = 1; neurona <= 8; neurona++)
+    {
+        errorAcumulado = 0;
+
+        tiempo_inicio = omp_get_wtime();
+
+        for (int i = 0; i < NUM_PRUEBAS; i++)
+        {
+            // Llamamos a tu AlgPall con neurona y número de hilos
+            MejorSolucion = AlgPallNeurona(nGeneraciones, tPoblacion, g, num_hilos, neurona);
+
+            // Calcular error
+            costeEncontrado = evaluar(MejorSolucion, g);
+            error = abs(costeEncontrado - costeOptimo);
+            errorAcumulado += error;
+
+            free(MejorSolucion);
+        }
+
+        tiempo_fin = omp_get_wtime();
+
+        double tiempo_total = (tiempo_fin - tiempo_inicio) / NUM_PRUEBAS;
+        double errorPromedio = (double)errorAcumulado / NUM_PRUEBAS;
+
+        sprintf(nombreFichero, "resultadosSpike%d.txt", neurona);
+        f = fopen(nombreFichero, "a");
+        if (!f)
+        {
+            printf("Error al abrir el fichero %s\n", nombreFichero);
+            exit(1);
+        }
+
+        fprintf(f, "%d %f %f\n", num_hilos, tiempo_total, errorPromedio);
+        fclose(f);
+    }
+
+    // Probamos con hilos de 2 en 2
     for (int num_hilos = 2; num_hilos <= 12; num_hilos += 2)
     {
-
         for (int neurona = 1; neurona <= 8; neurona++)
         {
-            int errorAcumulado = 0;
-            double tiempo_inicio = omp_get_wtime();
-            char nombreFichero[50];
+            errorAcumulado = 0;
+
+            tiempo_inicio = omp_get_wtime();
 
             for (int i = 0; i < NUM_PRUEBAS; i++)
             {
-                int *MejorSolucion = AlgPallNeurona(nGeneraciones, tPoblacion, g, num_hilos, neurona);
+                MejorSolucion = AlgPallNeurona(nGeneraciones, tPoblacion, g, num_hilos, neurona);
 
-                int costeEncontrado = evaluar(MejorSolucion, g);
-                int error = abs(costeEncontrado - costeOptimo);
+                // Calcular error
+                costeEncontrado = evaluar(MejorSolucion, g);
+                error = abs(costeEncontrado - costeOptimo);
                 errorAcumulado += error;
 
                 free(MejorSolucion);
             }
 
-            double tiempo_fin = omp_get_wtime();
+            tiempo_fin = omp_get_wtime();
+
             double tiempo_total = (tiempo_fin - tiempo_inicio) / NUM_PRUEBAS;
             double errorPromedio = (double)errorAcumulado / NUM_PRUEBAS;
 
             sprintf(nombreFichero, "resultadosSpike%d.txt", neurona);
-            FILE *f = fopen(nombreFichero, "a");
-            if (!f) { printf("Error al abrir %s\n", nombreFichero); exit(1); }
+            f = fopen(nombreFichero, "a");
+            if (!f)
+            {
+                printf("Error al abrir el fichero %s\n", nombreFichero);
+                exit(1);
+            }
+
             fprintf(f, "%d %f %f\n", num_hilos, tiempo_total, errorPromedio);
             fclose(f);
-
-            printf("Neuron %d | Hilos %d | Tiempo medio: %.6f | Error medio: %.2f\n",
-                   neurona, num_hilos, tiempo_total, errorPromedio);
         }
     }
 }

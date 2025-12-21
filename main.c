@@ -15,20 +15,23 @@ int main()
 {
     printf("Algoritmo Genético para el Ciclo Hamiltoniano\n");
     printf("=============================================\n");
-    int ngens = 1000, TPoblacion = 50; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
 
     printf("Cargando grafo desde archivo...\n");
     grafo MCostes = cargar_grafo("Pruebas/eil51.tsp");
     int* SolucionOptima = cargar_solucion("Pruebas/eil51.opt.tour");
     int costeOptimo = evaluar(SolucionOptima, &MCostes);
 
-    printf("Ejecutando Pruebas\n");
-    pruebaSecuencial(TPoblacion, ngens, &MCostes, costeOptimo);
-    pruebaParalela(TPoblacion, ngens, &MCostes, costeOptimo);
-    pruebaSecuencialSpike(TPoblacion, ngens, &MCostes, costeOptimo);
-    pruebaParalelaSpike(TPoblacion, ngens, &MCostes, costeOptimo);
-    printf("\nPruebas Finalizadas\n");
-
+    int ngens = 5000, TPoblacion = 0;
+    for(int q = 0; q < 5; q++)
+    {
+        TPoblacion += 250;
+        printf("Ejecutando Pruebas\n");
+        pruebaSecuencial(TPoblacion, ngens, &MCostes, costeOptimo);
+        pruebaParalela(TPoblacion, ngens, &MCostes, costeOptimo);
+        pruebaSecuencialSpike(TPoblacion, ngens, &MCostes, costeOptimo);
+        pruebaParalelaSpike(TPoblacion, ngens, &MCostes, costeOptimo);
+        printf("\nPruebas Finalizadas\n");
+    }
     /*
     int *MejorSolucion = AlgPall(ngens, TPoblacion, &MCostes,2);
 
