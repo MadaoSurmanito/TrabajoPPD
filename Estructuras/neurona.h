@@ -1,6 +1,9 @@
 #ifndef NEURONA_H
 #define NEURONA_H
 
+#include <stdio.h>
+#include <stdlib.h>
+
 typedef struct
 {
     // Parámetros del modelo de Izhikevich

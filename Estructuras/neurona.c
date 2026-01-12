@@ -7,9 +7,9 @@ Neurona crear_neurona(float a, float b, float c, float d)
     n.b = b;
     n.c = c;
     n.d = d;
-    n.v = 0.0f;
-    n.u = 0.0f;
-    n.I = 0.0f;
+    n.v = c;
+    n.u = b * c;
+    n.I = 10.0f;
     return n;
 }
 
@@ -50,7 +50,13 @@ float neurona_get_I(Neurona *n)
 
 float probabilidad_spike(Neurona *n)
 {
-    return n->v - n->c /(30.0f - n->c); 
+    float p = (n->v - n->c) / (30.0f - n->c);
+
+    // limitar a [0, 1]
+    if (p < 0.0f) p = 0.0f;
+    if (p > 1.0f) p = 1.0f;
+
+    return p;
 }
 
 // Regular Spiking (RS)
@@ -104,22 +110,32 @@ Neurona crear_neurona_LTS()
 // Calcula el siguiente estado de la neurona usando el método de Euler
 void spike_neurona(Neurona *n)
 {
-    float v = n->v;
-    float u = n->u;
-    float I = n->I;
+    // Parámetros de integración
+    const float dt = 0.5f;
 
-    // Ecuaciones diferenciales del modelo de Izhikevich
-    float dv = 0.04f * v * v + 5.0f * v + 140.0f - u + I;
-    float du = n->a * (n->b * v - u);
+    // Spike externo único (pulso)
+    n->I = 15.0f;
 
-    // Actualización del estado usando el método de Euler
-    n->v += dv;
-    n->u += du;
-
-    // Comprobación de spike
-    if (n->v >= 30.0f)
+    // Integración corta (como recomienda Izhikevich)
+    for (int i = 0; i < 2; i++)
     {
-        n->v = n->c;
-        n->u += n->d;
+        float v = n->v;
+        float u = n->u;
+
+        float dv = 0.04f * v * v + 5.0f * v + 140.0f - u + n->I;
+        float du = n->a * (n->b * v - u);
+
+        n->v += dv * dt;
+        n->u += du * dt;
+
+        // Spike interno
+        if (n->v >= 30.0f)
+        {
+            n->v = n->c;
+            n->u += n->d;
+        }
     }
+
+    // Apagamos la corriente (pulso único)
+    n->I = 0.0f;
 }
