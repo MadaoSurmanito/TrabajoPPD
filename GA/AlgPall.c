@@ -1,18 +1,6 @@
-#include <omp.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "Alg.h"
 
-#include "Estructuras/grafo.h"
-#include "Estructuras/poblacion.h"
-#include "Operadores/evaluar.h"
-#include "Operadores/cruce.h"
-#include "Operadores/mutacion.h"
-#include "Operadores/seleccion.h"
-#include "Estructuras/neurona.h"
-#include "Operadores/seeds.h"
-
-int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes, int num_hilos, int tipo_neurona) 
+int *AlgPall(int ngens, int TPoblacion, grafo *MCostes, int num_hilos) 
 {
     int interval_migracion = 200;
     int num_migrantes = 5;
@@ -36,35 +24,6 @@ int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes, int num_hilos, in
 
     #pragma omp parallel
     {
-        Neurona n;
-        switch (tipo_neurona)
-        {
-        case 1:
-            n = crear_neurona_RS();
-            break;
-        case 2:
-            n = crear_neurona_IB();
-            break;
-        case 3:
-            n = crear_neurona_CH();
-            break;
-        case 4:
-            n = crear_neurona_FS();
-            break;
-        case 5:
-            n = crear_neurona_TC1();
-            break;
-        case 6:
-            n = crear_neurona_TC2();
-            break;
-        case 7:
-            n = crear_neurona_RZ();
-            break;
-        case 8:
-            n = crear_neurona_LTS();
-            break;
-        }
-
         int tid = omp_get_thread_num();
         poblacion *pob = &islas[tid];
 
@@ -76,13 +35,12 @@ int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes, int num_hilos, in
         for (int g = 0; g < ngens; g++) {
             for (int k = 0; k < pob->num_individuos; k++) {
                 int padre[MCostes->num_nodos], madre[MCostes->num_nodos];
-                emparejamiento(*pob, padre, madre, MCostes->num_nodos);
+                emparejamiento_random(*pob, padre, madre, MCostes->num_nodos);
 
                 int *hijo = cruce(padre, madre, MCostes);
 
-                if ((double)RAND()/RAND_MAX < probabilidad_spike(&n))
+                if ((double)RAND()/RAND_MAX < 0.5)
                     mutacion(hijo, MCostes->num_nodos);
-                spike_neurona(&n);
 
                 int coste_hijo = evaluar(hijo, MCostes);
                 seleccion(pob, MCostes, hijo);

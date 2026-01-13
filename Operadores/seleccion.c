@@ -1,8 +1,4 @@
-#include <stdlib.h>
-#include "evaluar.h"
-#include <string.h>
 #include "seleccion.h"
-#include "seeds.h"
 
 #define PROB_MEJOR 70
 

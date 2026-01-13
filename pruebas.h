@@ -1,7 +1,7 @@
 #ifndef PRUEBAS_H
 #define PRUEBAS_H
 
-#include "Estructuras/grafo.h"
+#include "GA/Alg.h"
 
 void pruebaSecuencial(int , int , grafo *, int);
 void pruebaSecuencialSpike(int , int , grafo *, int);

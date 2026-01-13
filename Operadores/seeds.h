@@ -3,6 +3,8 @@
 
 #include <omp.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <time.h>
 
 extern unsigned int nthreads;
 extern unsigned int *seeds;

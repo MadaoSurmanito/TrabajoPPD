@@ -63,6 +63,6 @@ Neurona crear_neurona_RZ();
 Neurona crear_neurona_LTS();
 
 // Calcula el siguiente estado de la neurona usando el método de Euler
-void spike_neurona(Neurona *n);
+void spike_neurona(Neurona *n, float intensidad);
 
 #endif

@@ -5,13 +5,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Estructuras/grafo.h"
-#include "Estructuras/poblacion.h"
-#include "Estructuras/neurona.h"
-#include "Operadores/evaluar.h"
-#include "Operadores/cruce.h"
-#include "Operadores/mutacion.h"
-#include "Operadores/seleccion.h"
+
+#include "../Estructuras/grafo.h"
+#include "../Estructuras/poblacion.h"
+#include "../Estructuras/neurona.h"
+
+#include "../Operadores/emparejamiento.h"
+#include "../Operadores/cruce.h"
+#include "../Operadores/mutacion.h"
+#include "../Operadores/seleccion.h"
+#include "../Operadores/evaluar.h"
+#include "../Operadores/seeds.h"
+#include "../Operadores/evaluarPob.h"
 
 int *AlgSec(int ngens, int TPoblacion, grafo *MCostes);
 

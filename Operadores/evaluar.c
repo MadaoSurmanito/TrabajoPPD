@@ -1,5 +1,3 @@
-#include <stdlib.h>
-#include <string.h>
 #include "evaluar.h"
 
 int evaluar(int *individuo, grafo* g)

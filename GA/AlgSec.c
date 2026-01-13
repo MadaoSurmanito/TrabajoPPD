@@ -1,15 +1,4 @@
-#include <omp.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "Estructuras/grafo.h"
-#include "Estructuras/poblacion.h"
-#include "Operadores/evaluar.h"
-#include "Operadores/cruce.h"
-#include "Operadores/mutacion.h"
-#include "Operadores/seleccion.h"
-#include "Operadores/seeds.h"
+#include "Alg.h"
 
 int *AlgSec(int ngens, int TPoblacion, grafo *MCostes)
 {
@@ -23,7 +12,7 @@ int *AlgSec(int ngens, int TPoblacion, grafo *MCostes)
     {
         for (int k = 0; k < TPoblacion; k++) {
             int madre[MCostes->num_nodos], padre[MCostes->num_nodos], *hijo;
-            emparejamiento(pob, padre, madre, MCostes->num_nodos);
+            emparejamiento_random(pob, padre, madre, MCostes->num_nodos);
             hijo = cruce(padre, madre, MCostes);
 
             double prob_mutacion = (double)RAND() / (double)RAND_MAX;

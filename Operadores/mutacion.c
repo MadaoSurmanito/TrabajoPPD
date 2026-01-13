@@ -1,7 +1,4 @@
-#include <stdlib.h>
 #include "mutacion.h"
-#include "seeds.h"
-// HAY QUE HACER EL SRAND(TIME(NULL)) EN EL MAIN
 
 void mutacion(int *individuo, int tamaño)
 {

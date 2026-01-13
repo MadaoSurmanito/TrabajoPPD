@@ -1,39 +1,25 @@
-#include <omp.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "Estructuras/grafo.h"
-#include "Estructuras/poblacion.h"
-#include "Operadores/evaluar.h"
-#include "Operadores/cruce.h"
-#include "Operadores/mutacion.h"
-#include "Operadores/seleccion.h"
-#include "Alg.h"
 #include "pruebas.h"
 
 int main()
 {
     printf("Algoritmo Genético para el Ciclo Hamiltoniano\n");
     printf("=============================================\n");
+    int ngens = 200, TPoblacion = 50; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
 
     printf("Cargando grafo desde archivo...\n");
     grafo MCostes = cargar_grafo("Pruebas/eil51.tsp");
     int* SolucionOptima = cargar_solucion("Pruebas/eil51.opt.tour");
     int costeOptimo = evaluar(SolucionOptima, &MCostes);
 
-    int ngens = 5000, TPoblacion = 0;
-    for(int q = 0; q < 5; q++)
-    {
-        TPoblacion += 250;
-        printf("Ejecutando Pruebas\n");
-        pruebaSecuencial(TPoblacion, ngens, &MCostes, costeOptimo);
-        pruebaParalela(TPoblacion, ngens, &MCostes, costeOptimo);
-        pruebaSecuencialSpike(TPoblacion, ngens, &MCostes, costeOptimo);
-        pruebaParalelaSpike(TPoblacion, ngens, &MCostes, costeOptimo);
-        printf("\nPruebas Finalizadas\n");
-    }
+    printf("Ejecutando Pruebas\n");
+    pruebaSecuencial(TPoblacion, ngens, &MCostes, costeOptimo);
+    pruebaParalela(TPoblacion, ngens, &MCostes, costeOptimo);
+    pruebaSecuencialSpike(TPoblacion, ngens, &MCostes, costeOptimo);
+    pruebaParalelaSpike(TPoblacion, ngens, &MCostes, costeOptimo);
+    printf("\nPruebas Finalizadas\n");
+
     /*
-    int *MejorSolucion = AlgPall(ngens, TPoblacion, &MCostes,2);
+    int *MejorSolucion = AlgSecNeurona(ngens, TPoblacion, &MCostes, 1);
 
     printf("\nMejor Solucion Encontrada:\n");
 
@@ -48,11 +34,11 @@ int main()
     for (int i = 0; i < MCostes.num_nodos; i++)
         printf("%d ", SolucionOptima[i]);
     
-    printf("\nCoste : %i\n", evaluar(SolucionOptima, &MCostes));
-    */   
+    printf("\nCoste : %i\n", evaluar(SolucionOptima, &MCostes));   
 
     free(SolucionOptima);
 
     liberar_grafo(&MCostes);
     return 0;
+    */
 }

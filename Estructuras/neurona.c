@@ -9,7 +9,7 @@ Neurona crear_neurona(float a, float b, float c, float d)
     n.d = d;
     n.v = c;
     n.u = b * c;
-    n.I = 10.0f;
+    n.I = 0.0f;
     return n;
 }
 
@@ -108,16 +108,16 @@ Neurona crear_neurona_LTS()
 }
 
 // Calcula el siguiente estado de la neurona usando el método de Euler
-void spike_neurona(Neurona *n)
+void spike_neurona(Neurona *n, float intensidad)
 {
     // Parámetros de integración
-    const float dt = 0.5f;
+    const float dt = 0.1f;
 
     // Spike externo único (pulso)
-    n->I = 15.0f;
+    n->I = intensidad;
 
     // Integración corta (como recomienda Izhikevich)
-    for (int i = 0; i < 2; i++)
+    for (int i = 0; i < 10; i++)
     {
         float v = n->v;
         float u = n->u;

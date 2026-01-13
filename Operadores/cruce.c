@@ -101,22 +101,3 @@ int *cruce(int padre[], int madre[], grafo *MCostes)
     return hijo;
 }
 
-void emparejamiento(poblacion pob, int padre[], int madre[], int num_nodos)
-{
-    int tam_poblacion = pob.num_individuos;
-
-    int indicePadre = RAND() % tam_poblacion;
-    int indiceMadre = RAND() % tam_poblacion;
-    // Asegurarse de que el padre y la madre no sean el mismo individuo
-    while (indiceMadre == indicePadre)
-    {
-        indiceMadre = RAND() % tam_poblacion;
-    }
-    // Copiar los individuos seleccionados en padre y madre
-    for (int i = 0; i < num_nodos; i++)
-    {
-
-        padre[i] = pob.individuos[indicePadre][i];
-        madre[i] = pob.individuos[indiceMadre][i];
-    }
-}
