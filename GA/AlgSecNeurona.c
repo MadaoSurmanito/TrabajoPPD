@@ -52,7 +52,7 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes, Neurona *n)
             evaluarPob(&pob, TPoblacion, MCostes, &mejorfPob, &promfPob, &peorfPob);
             fprintf(fP, "%.4f\t%.4f\t%.4f\n", mejorfPob, promfPob, peorfPob);
             */
-           
+
             free(hijo);
         }
     }

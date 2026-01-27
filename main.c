@@ -4,7 +4,7 @@ int main()
 {
     printf("Algoritmo Genético para el Ciclo Hamiltoniano\n");
     printf("=============================================\n");
-    int ngens = 200, TPoblacion = 50; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
+    int ngens = 2000, TPoblacion = 500; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
 
     printf("Cargando grafo desde archivo...\n");
     grafo MCostes = cargar_grafo("Pruebas/eil51.tsp");
@@ -35,10 +35,10 @@ int main()
         printf("%d ", SolucionOptima[i]);
     
     printf("\nCoste : %i\n", evaluar(SolucionOptima, &MCostes));   
+    */
 
     free(SolucionOptima);
 
     liberar_grafo(&MCostes);
     return 0;
-    */
 }
