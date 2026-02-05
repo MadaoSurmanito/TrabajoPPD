@@ -4,41 +4,29 @@ int main()
 {
     printf("Algoritmo Genético para el Ciclo Hamiltoniano\n");
     printf("=============================================\n");
-    int ngens = 2000, TPoblacion = 500; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
+    int ngens = 1000, TPoblacion = 100; // ngens = numero de generaciones     TPoblacion = tamaño poblacion
 
     printf("Cargando grafo desde archivo...\n");
     grafo MCostes = cargar_grafo("Pruebas/eil51.tsp");
     int* SolucionOptima = cargar_solucion("Pruebas/eil51.opt.tour");
-    int costeOptimo = evaluar(SolucionOptima, &MCostes);
 
-    printf("Ejecutando Pruebas\n");
-    pruebaSecuencial(TPoblacion, ngens, &MCostes, costeOptimo);
-    pruebaParalela(TPoblacion, ngens, &MCostes, costeOptimo);
-    pruebaSecuencialSpike(TPoblacion, ngens, &MCostes, costeOptimo);
-    pruebaParalelaSpike(TPoblacion, ngens, &MCostes, costeOptimo);
+    printf("Ejecutando Pruebas Tiempos\n");
+    pruebaSecuencial(TPoblacion, ngens, &MCostes);
+    pruebaParalela(TPoblacion, ngens, &MCostes);
+    pruebaSecuencialSpike(TPoblacion, ngens, &MCostes);
+    pruebaParalelaSpike(TPoblacion, ngens, &MCostes);
     printf("\nPruebas Finalizadas\n");
 
-    /*
-    int *MejorSolucion = AlgSecNeurona(ngens, TPoblacion, &MCostes, 1);
-
-    printf("\nMejor Solucion Encontrada:\n");
-
-    for (int i = 0; i < MCostes.num_nodos; i++)
-        printf("%d ", MejorSolucion[i]);
-
-    printf("\nCoste : %i\n", evaluar(MejorSolucion, &MCostes));
-
-    printf("\nSolución Óptima del fichero:\n");
-    printf("%d ", SolucionOptima[50]);
-
-    for (int i = 0; i < MCostes.num_nodos; i++)
-        printf("%d ", SolucionOptima[i]);
-    
-    printf("\nCoste : %i\n", evaluar(SolucionOptima, &MCostes));   
-    */
+    printf("Ejecutando Pruebas Comportamiento\n");
+    AlgSec(ngens, TPoblacion, &MCostes, 1, 1);
+    for(int i = 1; i <= 8; i++)
+        AlgSecNeurona(ngens, TPoblacion, &MCostes, i, 1, 1);
+    AlgPall(ngens, TPoblacion, &MCostes, 8, 1, 1);
+    for(int i = 1; i <= 8; i++)
+        AlgPallNeurona(ngens, TPoblacion, &MCostes, 8, i, 1, 1);
+    printf("\nPruebas Finalizadas\n");
 
     free(SolucionOptima);
-
     liberar_grafo(&MCostes);
     return 0;
 }

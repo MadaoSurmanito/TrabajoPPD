@@ -2,25 +2,29 @@
 
 #define PROB_MEJOR 70
 
-void seleccion(poblacion *poblacion, grafo* g, int *individuo)
+int seleccion(poblacion *p, grafo *g, int *individuo, int costeIndividuo)
 {
-    int tam_poblacion = poblacion->num_individuos;
+    if (costeIndividuo == -1) return 0;
 
-    int indice = RAND() % tam_poblacion;
-    int *individuoPoblacion = poblacion->individuos[indice];
-    int valorPoblacion = evaluar(individuoPoblacion, g);
-    int valorIndividuo = evaluar(individuo, g);
-    int probabilidad = RAND() % 100; // Genera un número aleatorio entre 0 y 99
+    int indice = rand() % p->num_individuos;
+    int *indPob = p->individuos[indice];
 
+    int costePob = evaluar(indPob, g);
+    int prob = rand() % 100;
 
-    if (probabilidad < PROB_MEJOR) // probabilidad de que se compruebe si es mejor el que ya hay
+    if (prob < PROB_MEJOR)
     {
-        // En caso de que la probabilidad se de, si el valor del individuo nuestro es mejor se sustituye
-        if (valorPoblacion == -1)
-            memcpy(individuoPoblacion, individuo, g->num_nodos * sizeof(int));
-        else if (valorIndividuo != -1 && valorPoblacion > valorIndividuo)
-            memcpy(individuoPoblacion, individuo, g->num_nodos * sizeof(int));
+        if (costePob == -1 || costeIndividuo < costePob)
+        {
+            memcpy(indPob, individuo, g->num_nodos * sizeof(int));
+            return 1;
+        }
     }
     else
-        memcpy(individuoPoblacion, individuo, g->num_nodos * sizeof(int));
+    {
+        memcpy(indPob, individuo, g->num_nodos * sizeof(int));
+        return 1;
+    }
+
+    return 0;
 }

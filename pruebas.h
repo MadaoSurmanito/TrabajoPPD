@@ -3,9 +3,9 @@
 
 #include "GA/Alg.h"
 
-void pruebaSecuencial(int , int , grafo *, int);
-void pruebaSecuencialSpike(int , int , grafo *, int);
-void pruebaParalela(int tPoblacion, int nGeneraciones, grafo *g, int costeOptimo);
-void pruebaParalelaSpike(int tPoblacion, int nGeneraciones, grafo *g, int costeOptimo);
+void pruebaSecuencial(int , int , grafo *);
+void pruebaSecuencialSpike(int , int , grafo *);
+void pruebaParalela(int , int , grafo *);
+void pruebaParalelaSpike(int , int , grafo *);
 
 #endif // PRUEBAS_H

@@ -9,6 +9,6 @@
 #include "../Estructuras/grafo.h"
 
 // void seleccion(poblacion *poblacion, int *individuo, int **costes, int tamaño)
-void seleccion(poblacion *poblacion, grafo* g, int *individuo);
+int seleccion(poblacion *p, grafo *g, int *individuo, int costeIndividuo);
 
 #endif // SELECCION_H

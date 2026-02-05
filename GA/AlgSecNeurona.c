@@ -1,101 +1,129 @@
 #include "Alg.h"
 
-int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes, Neurona *n)
+int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes,
+                          Neurona *n, const char *nombreNeurona,
+                          int datosPoblacion, int datosMutacion)
 {
-    poblacion pob = crear_poblacion(TPoblacion, MCostes->num_nodos); // Genera los primeros individuos
-    int *MejorSolucion = malloc(sizeof(int) * MCostes->num_nodos);   // Inicialmente cualquiera vale
-    memcpy(MejorSolucion, pob.individuos[0], sizeof(int) * MCostes->num_nodos);  
+    int num_nodos = MCostes->num_nodos;
 
+    poblacion pob = crear_poblacion(TPoblacion, num_nodos);
+    int *madre = malloc(sizeof(int) * num_nodos);
+    int *padre = malloc(sizeof(int) * num_nodos);
+
+    int *MejorSolucion = malloc(sizeof(int) * num_nodos);
+    memcpy(MejorSolucion, pob.individuos[0], sizeof(int) * num_nodos);
     int CosteMejorSolucion = evaluar(MejorSolucion, MCostes);
-    float sinmejorar = 0;
 
-    /*
-    FILE *fN = fopen("Analisis/Datos/DatosNeurona.txt", "w");
-    FILE *fP = fopen("Analisis/Datos/DatosPoblacion.txt", "w");
-    if (!fN || !fP) {
-        perror("Error al abrir el fichero");
-        exit(1);
+    char carpeta[256], carpetaM[256], carpetaP[256];
+    sprintf(carpeta, "Analisis/Datos/Secuencial/Neurona_%s", nombreNeurona);
+    sprintf(carpetaM, "%s/Mutacion", carpeta);
+    sprintf(carpetaP, "%s/Poblacion", carpeta);
+
+    if (datosPoblacion || datosMutacion)
+    {
+        mkdir("Analisis", 0777);
+        mkdir("Analisis/Datos", 0777);
+        mkdir("Analisis/Datos/Secuencial", 0777);
+        mkdir(carpeta, 0777);
+        mkdir(carpetaM, 0777);
+        mkdir(carpetaP, 0777);
     }
-    */
+
+    FILE *fMut = NULL;
+    if (datosMutacion)
+    {
+        char fMutNombre[512];
+        sprintf(fMutNombre, "%s/Mutacion.txt", carpetaM);
+        fMut = fopen(fMutNombre, "w");
+    }
 
     for (int i = 0; i < ngens; i++)
     {
-        for (int k = 0; k < TPoblacion; k++) {
-            int madre[MCostes->num_nodos], padre[MCostes->num_nodos], *hijo;
+        for (int k = 0; k < TPoblacion; k++)
+        {
+            int muta = 0;
+            int entra = 0;
 
-            emparejamiento_random(pob, padre, madre, MCostes->num_nodos); // Devuelve 2 individuos(padre y madre)
-
-            hijo = cruce(padre, madre, MCostes); // Crea un nuevo individuo válido(hijo)
+            emparejamiento_random(pob, padre, madre, num_nodos);
+            int *hijo = cruce(padre, madre, MCostes);
 
             if (neurona_get_v(n) > 0.0f)
-                mutacion(hijo, MCostes->num_nodos); // Modifica al hijo dentro de una probabilidad
-            seleccion(&pob, MCostes, hijo);         // Intenta insertar al hijo en la población
+            {
+                mutacion(hijo, num_nodos);
+                muta = 1;
+            }
 
             int costeHijo = evaluar(hijo, MCostes);
-            if (CosteMejorSolucion == -1 || costeHijo < CosteMejorSolucion)
+            entra = seleccion(&pob, MCostes, hijo, costeHijo);
+
+            if (datosMutacion && fMut)
+                fprintf(fMut, "%d %d %d\n", i, muta, entra);
+
+            if (costeHijo < CosteMejorSolucion)
             {
-                memcpy(MejorSolucion, hijo, sizeof(int) * MCostes->num_nodos);
+                memcpy(MejorSolucion, hijo, sizeof(int) * num_nodos);
                 CosteMejorSolucion = costeHijo;
-                sinmejorar = 0;
             }
-            else
-            {
-                sinmejorar += 1;
-            }
-            spike_neurona(n, 10.0f);           // Actualiza el estado de la neurona
 
-            /*
-            // (float)(i*TPoblacion+k)/(TPoblacion*ngens/50)+5.0f
-            fprintf(fN, "%.4f\t%.4f\t%.4f\n", neurona_get_v(n), neurona_get_u(n), 10.0f);
-
-            float mejorfPob, promfPob, peorfPob;
-            evaluarPob(&pob, TPoblacion, MCostes, &mejorfPob, &promfPob, &peorfPob);
-            fprintf(fP, "%.4f\t%.4f\t%.4f\n", mejorfPob, promfPob, peorfPob);
-            */
-
+            spike_neurona(n, 10.0f);
             free(hijo);
+        }
+
+        if (datosPoblacion)
+        {
+            char fPob[512];
+            sprintf(fPob, "%s/Gen%d.txt", carpetaP, i);
+
+            FILE *f = fopen(fPob, "w");
+            if (!f) continue;
+
+            for (int j = 0; j < TPoblacion; j++)
+            {
+                fprintf(f, "%d ", j);
+                for (int n = 0; n < num_nodos; n++)
+                {
+                    fprintf(f, "%d", pob.individuos[j][n]);
+                    if (n < num_nodos - 1) fprintf(f, "-");
+                }
+                fprintf(f, " %d\n", evaluar(pob.individuos[j], MCostes));
+            }
+            fclose(f);
         }
     }
 
-    /*
-    fclose(fN);
-    fclose(fP);
-    */
+    free(madre);
+    free(padre);
 
+    if (fMut) fclose(fMut);
     liberar_poblacion(&pob);
 
     return MejorSolucion;
 }
 
-int *AlgSecNeurona(int ngens, int TPoblacion, grafo *MCostes, int tipo_neurona)
+int *AlgSecNeurona(int ngens, int TPoblacion, grafo *MCostes,
+                   int tipo_neurona, int datosPoblacion, int datosMutacion)
 {
     Neurona n;
+    const char *nombreNeurona;
+
     switch (tipo_neurona)
     {
-    case 1:
-        n = crear_neurona_RS();
-        break;
-    case 2:
-        n = crear_neurona_IB();
-        break;
-    case 3:
-        n = crear_neurona_CH();
-        break;
-    case 4:
-        n = crear_neurona_FS();
-        break;
-    case 5:
-        n = crear_neurona_TC1();
-        break;
-    case 6:
-        n = crear_neurona_TC2();
-        break;
-    case 7:
-        n = crear_neurona_RZ();
-        break;
-    case 8:
-        n = crear_neurona_LTS();
-        break;
+        case 1: n = crear_neurona_RS();  nombreNeurona = "RS";  break;
+        case 2: n = crear_neurona_IB();  nombreNeurona = "IB";  break;
+        case 3: n = crear_neurona_CH();  nombreNeurona = "CH";  break;
+        case 4: n = crear_neurona_FS();  nombreNeurona = "FS";  break;
+        case 5: n = crear_neurona_TC1(); nombreNeurona = "TC1"; break;
+        case 6: n = crear_neurona_TC2(); nombreNeurona = "TC2"; break;
+        case 7: n = crear_neurona_RZ();  nombreNeurona = "RZ";  break;
+        case 8: n = crear_neurona_LTS(); nombreNeurona = "LTS"; break;
+        default: n = crear_neurona_RS(); nombreNeurona = "RS"; break;
     }
-    return algGen_CHamiltoniano(ngens, TPoblacion, MCostes, &n);
+
+    return algGen_CHamiltoniano(ngens, TPoblacion, MCostes, &n,
+                                nombreNeurona, datosPoblacion, datosMutacion);
+}
+
+int *AlgSecNeurona_DEF(int ngens, int TPoblacion, grafo *MCostes, int tipo_neurona)
+{
+    return AlgSecNeurona(ngens, TPoblacion, MCostes, tipo_neurona, 0, 0);
 }
