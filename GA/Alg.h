@@ -23,17 +23,17 @@
 int *AlgSec(int ngens, int TPoblacion, grafo *MCostes, int datosPoblacion, int datosMutacion);
 int *AlgSec_DEF(int ngens, int TPoblacion, grafo *MCostes);
 
-int *AlgSecNeurona(int ngens, int TPoblacion, grafo *MCostes, int tipo_neurona, int datosPoblacion, int datosMutacion);
+int *AlgSecNeurona(int ngens, int TPoblacion, grafo *MCostes, int tipo_neurona, float pUmbral, int datosPoblacion, int datosMutacion);
 int *AlgSecNeurona_DEF(int ngens, int TPoblacion, grafo *MCostes, int tipo_neurona);
 
 int *AlgPall(int ngens, int TPoblacion, grafo *MCostes, int num_hilos, int datosPoblacion, int datosMutacion);
 int *AlgPall_DEF(int ngens, int TPoblacion, grafo *MCostes, int num_hilos);
 
-int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes, int num_hilos, int tipo_neurona, int datosPoblacion, int datosMutacion);
+int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes, int num_hilos, int tipo_neurona, float pUmbral, int datosPoblacion, int datosMutacion);
 int *AlgPallNeurona_DEF(int ngens, int TPoblacion, grafo *MCostes, int num_hilos, int tipo_neurona);
 
 int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes,
                           Neurona *n, const char *nombreNeurona,
-                          int datosPoblacion, int datosMutacion);
+                          float pUmbral, int datosPoblacion, int datosMutacion);
 
 #endif // ALG_H

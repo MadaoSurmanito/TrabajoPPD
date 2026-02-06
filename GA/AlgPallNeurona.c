@@ -2,7 +2,7 @@
 
 int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes,
                     int num_hilos, int tipo_neurona,
-                    int datosPoblacion, int datosMutacion)
+                    float pUmbral, int datosPoblacion, int datosMutacion)
 {
     int interval_migracion = 200;
     int num_migrantes = 5;
@@ -47,7 +47,7 @@ int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes,
     FILE **fMut = NULL;
     if (datosMutacion) {
         char dirM[256];
-        snprintf(dirM, sizeof(dirM), "%s/Mutacion", base);
+        snprintf(dirM, sizeof(dirM), "%s/Mutacion_%.1f", base, pUmbral);
         mkdir(dirM, 0777);
 
         fMut = malloc(num_hilos * sizeof(FILE *));
@@ -62,7 +62,7 @@ int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes,
     /* ========== POBLACIÓN ========== */
     if (datosPoblacion) {
         char dirP[256];
-        snprintf(dirP, sizeof(dirP), "%s/Poblacion", base);
+        snprintf(dirP, sizeof(dirP), "%s/Poblacion_%.1f", base, pUmbral);
         mkdir(dirP, 0777);
 
         for (int i = 0; i < num_hilos; i++) {
@@ -108,7 +108,7 @@ int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes,
                 int *hijo = cruce(padre, madre, MCostes);
 
                 int muta = 0;
-                if (neurona_get_v(&n) > 0.0f) {
+                if (neurona_get_v(&n) > pUmbral * 30.0f) {
                     mutacion(hijo, num_nodos);
                     muta = 1;
                 }
@@ -212,5 +212,5 @@ int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes,
 int *AlgPallNeurona_DEF(int ngens, int TPoblacion, grafo *MCostes,
                     int num_hilos, int tipo_neurona)
 {
-    return AlgPallNeurona(ngens, TPoblacion, MCostes, num_hilos, tipo_neurona, 0, 0);
+    return AlgPallNeurona(ngens, TPoblacion, MCostes, num_hilos, tipo_neurona, 0.6f, 0, 0);
 }

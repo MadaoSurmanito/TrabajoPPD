@@ -1,7 +1,7 @@
 #include "Alg.h"
 
 int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes,
-                          Neurona *n, const char *nombreNeurona,
+                          Neurona *n, const char *nombreNeurona, float pUmbral,
                           int datosPoblacion, int datosMutacion)
 {
     int num_nodos = MCostes->num_nodos;
@@ -16,8 +16,8 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes,
 
     char carpeta[256], carpetaM[256], carpetaP[256];
     sprintf(carpeta, "Analisis/Datos/Secuencial/Neurona_%s", nombreNeurona);
-    sprintf(carpetaM, "%s/Mutacion", carpeta);
-    sprintf(carpetaP, "%s/Poblacion", carpeta);
+    sprintf(carpetaM, "%s/Mutacion_%.1f", carpeta, pUmbral);
+    sprintf(carpetaP, "%s/Poblacion_%.1f", carpeta, pUmbral);
 
     if (datosPoblacion || datosMutacion)
     {
@@ -47,7 +47,7 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes,
             emparejamiento_random(pob, padre, madre, num_nodos);
             int *hijo = cruce(padre, madre, MCostes);
 
-            if (neurona_get_v(n) > 0.0f)
+            if (neurona_get_v(n) > pUmbral * 30.0f)
             {
                 mutacion(hijo, num_nodos);
                 muta = 1;
@@ -100,8 +100,8 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes,
     return MejorSolucion;
 }
 
-int *AlgSecNeurona(int ngens, int TPoblacion, grafo *MCostes,
-                   int tipo_neurona, int datosPoblacion, int datosMutacion)
+int *AlgSecNeurona(int ngens, int TPoblacion, grafo *MCostes, int tipo_neurona, 
+                   float pUmbral, int datosPoblacion, int datosMutacion)
 {
     Neurona n;
     const char *nombreNeurona;
@@ -120,10 +120,10 @@ int *AlgSecNeurona(int ngens, int TPoblacion, grafo *MCostes,
     }
 
     return algGen_CHamiltoniano(ngens, TPoblacion, MCostes, &n,
-                                nombreNeurona, datosPoblacion, datosMutacion);
+                                nombreNeurona, pUmbral, datosPoblacion, datosMutacion);
 }
 
 int *AlgSecNeurona_DEF(int ngens, int TPoblacion, grafo *MCostes, int tipo_neurona)
 {
-    return AlgSecNeurona(ngens, TPoblacion, MCostes, tipo_neurona, 0, 0);
+    return AlgSecNeurona(ngens, TPoblacion, MCostes, tipo_neurona, 0.6f, 0, 0);
 }

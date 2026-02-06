@@ -17,13 +17,46 @@ int main()
     pruebaParalelaSpike(TPoblacion, ngens, &MCostes);
     printf("\nPruebas Finalizadas\n");
 
+
     printf("Ejecutando Pruebas Comportamiento\n");
+    printf("Ejecutando AlgSec (general secuencial)...\n");
     AlgSec(ngens, TPoblacion, &MCostes, 1, 1);
-    for(int i = 1; i <= 8; i++)
-        AlgSecNeurona(ngens, TPoblacion, &MCostes, i, 1, 1);
+    printf("Ejecutando AlgPall (general paralelo)...\n");
     AlgPall(ngens, TPoblacion, &MCostes, 8, 1, 1);
-    for(int i = 1; i <= 8; i++)
-        AlgPallNeurona(ngens, TPoblacion, &MCostes, 8, i, 1, 1);
+
+    // --- BLOQUE 1: Factor 0.8 ---
+    printf("Pruebas por neurona con factor 0.8\n");
+    for(int i = 1; i <= 8; i++) {
+        printf("AlgSecNeurona: neurona %d, factor 0.8\n", i);
+        AlgSecNeurona(ngens, TPoblacion, &MCostes, i, 0.8f, 1, 1);
+    }
+    for(int i = 1; i <= 8; i++) {
+        printf("AlgPallNeurona: neurona %d, factor 0.8\n", i);
+        AlgPallNeurona(ngens, TPoblacion, &MCostes, 8, i, 0.8f, 1, 1);
+    }
+
+    // --- BLOQUE 2: Factor 0.6 ---
+    printf("Pruebas por neurona con factor 0.6\n");
+    for(int i = 1; i <= 8; i++) {
+        printf("AlgSecNeurona: neurona %d, factor 0.6\n", i);
+        AlgSecNeurona(ngens, TPoblacion, &MCostes, i, 0.6f, 1, 1);
+    }
+    for(int i = 1; i <= 8; i++) {
+        printf("AlgPallNeurona: neurona %d, factor 0.6\n", i);
+        AlgPallNeurona(ngens, TPoblacion, &MCostes, 8, i, 0.6f, 1, 1);
+    }
+
+    // --- BLOQUE 3: Factor 0.4 ---
+    printf("Pruebas por neurona con factor 0.4\n");
+    for(int i = 1; i <= 8; i++) {
+        printf("AlgSecNeurona: neurona %d, factor 0.4\n", i);
+        AlgSecNeurona(ngens, TPoblacion, &MCostes, i, 0.4f, 1, 1);
+    }
+    for(int i = 1; i <= 8; i++) {
+        printf("AlgPallNeurona: neurona %d, factor 0.4\n", i);
+        AlgPallNeurona(ngens, TPoblacion, &MCostes, 8, i, 0.4f, 1, 1);
+    }
+
     printf("\nPruebas Finalizadas\n");
 
     free(SolucionOptima);
