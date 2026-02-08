@@ -60,8 +60,8 @@ int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes,
     }
 
     /* ========== POBLACIÓN ========== */
+    char dirP[256];
     if (datosPoblacion) {
-        char dirP[256];
         snprintf(dirP, sizeof(dirP), "%s/Poblacion_%.1f", base, pUmbral);
         mkdir(dirP, 0777);
 
@@ -108,7 +108,7 @@ int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes,
                 int *hijo = cruce(padre, madre, MCostes);
 
                 int muta = 0;
-                if (neurona_get_v(&n) > pUmbral * 30.0f) {
+                if (neurona_get_v(&n) > (30.0f - ((1 - pUmbral) * (30.0f - neurona_get_c(&n))))) {
                     mutacion(hijo, num_nodos);
                     muta = 1;
                 }
@@ -134,8 +134,8 @@ int *AlgPallNeurona(int ngens, int TPoblacion, grafo *MCostes,
             if (datosPoblacion) {
                 char nombre[256];
                 snprintf(nombre, sizeof(nombre),
-                         "%s/Poblacion/Isla%d/Gen%d.txt",
-                         base, tid, g);
+                         "%s/Isla%d/Gen%d.txt",
+                         dirP, tid, g);
 
                 FILE *f = fopen(nombre, "w");
                 if (f) {

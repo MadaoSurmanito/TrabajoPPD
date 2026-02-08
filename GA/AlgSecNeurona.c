@@ -47,7 +47,7 @@ int *algGen_CHamiltoniano(int ngens, int TPoblacion, grafo *MCostes,
             emparejamiento_random(pob, padre, madre, num_nodos);
             int *hijo = cruce(padre, madre, MCostes);
 
-            if (neurona_get_v(n) > pUmbral * 30.0f)
+            if (neurona_get_v(n) > (30.0f - ((1 - pUmbral) * (30.0f - neurona_get_c(n)))))
             {
                 mutacion(hijo, num_nodos);
                 muta = 1;
